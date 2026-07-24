@@ -1,0 +1,13 @@
+# renv.lock placeholder
+#
+# After installing R, from project root run:
+#   install.packages("renv")
+#   renv::init()
+#   source("scripts/install_dependencies.R")
+#   renv::snapshot()
+#
+# Commit the generated renv.lock for reproducible restores via renv::restore().
+#
+# This stub exists so the repository structure matches the portfolio layout
+# before the first lockfile snapshot on the author's machine.
+{"LockfileVersion":1,"note":"Run renv::snapshot() to replace this placeholder"}

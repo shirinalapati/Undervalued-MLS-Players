@@ -1,0 +1,340 @@
+# Human-readable metric dictionary for transparent documentation.
+# Internal names must match role weights / feature columns used in production.
+# Native = ASA (or MLSPA) supplied field. Proxy = derived from Goals Added or other public data.
+
+metrics:
+  npxg_p90:
+    display_name: "Non-penalty expected goals / 90"
+    definition: "Expected goals from non-penalty shots, scaled per 90 minutes."
+    unit: "per 90"
+    source: "ASA"
+    native_or_proxy: "native"
+    derivation: null
+    direction: "higher_better"
+    soccer_rationale: "Measures chance quality created by the player's shooting involvement."
+    limitation: "Does not capture finishing skill beyond chance quality."
+    shrinkage: true
+    league_adjustment: true
+    missing_handling: "NA — never filled with 50; excluded from Role Fit blend"
+
+  xa_p90:
+    display_name: "Expected assists / 90"
+    definition: "Expected assists from completed passes that lead to shots, per 90 minutes."
+    unit: "per 90"
+    source: "ASA"
+    native_or_proxy: "native"
+    derivation: null
+    direction: "higher_better"
+    soccer_rationale: "Measures chance creation quality for teammates."
+    limitation: "Does not include unassisted build-up that never becomes a shot."
+    shrinkage: true
+    league_adjustment: true
+    missing_handling: "NA — excluded from blends when missing"
+
+  shots_p90:
+    display_name: "Shots / 90"
+    definition: "Shot attempts per 90 minutes."
+    unit: "per 90"
+    source: "ASA"
+    native_or_proxy: "native"
+    derivation: null
+    direction: "higher_better"
+    soccer_rationale: "Volume of finishing involvement."
+    limitation: "Does not distinguish shot quality."
+    shrinkage: true
+    league_adjustment: false
+    missing_handling: "NA"
+
+  pressures_p90:
+    display_name: "Pressing / defensive interrupting activity / 90"
+    definition: "Proxy for pressing and interrupting intensity derived from Goals Added defensive/interrupting actions and related defensive-event rates."
+    unit: "per 90 (proxy)"
+    source: "ASA Goals Added (derived)"
+    native_or_proxy: "proxy"
+    derivation: "Mapped from g+ interrupting / defending action rates when native pressure counts are unavailable"
+    direction: "higher_better"
+    soccer_rationale: "Relevant for roles that require aggressive engagement after loss or high pressing."
+    limitation: "Not physical-tracking pressure data. Do not treat as Opta-style pressures."
+    shrinkage: true
+    league_adjustment: true
+    missing_handling: "NA"
+
+  tackles_p90:
+    display_name: "Tackles / 90 (proxy)"
+    definition: "Tackle-like defensive engagement rate derived from available defensive-event / g+ inputs."
+    unit: "per 90 (proxy)"
+    source: "ASA Goals Added (derived)"
+    native_or_proxy: "proxy"
+    derivation: "g+-derived defensive engagement proxy"
+    direction: "higher_better"
+    soccer_rationale: "Useful for ball-winning and recovering roles."
+    limitation: "Proxy — not a guaranteed native tackle summary field."
+    shrinkage: true
+    league_adjustment: false
+    missing_handling: "NA"
+
+  interceptions_p90:
+    display_name: "Interceptions / 90 (proxy)"
+    definition: "Interception / reading-of-play proxy from available defensive event data."
+    unit: "per 90 (proxy)"
+    source: "ASA (derived)"
+    native_or_proxy: "proxy"
+    derivation: "Derived from available defensive-event / g+ interrupting rates"
+    direction: "higher_better"
+    soccer_rationale: "Anticipation and cutting out progressive passes."
+    limitation: "May not match broadcast 'interception' counting conventions."
+    shrinkage: true
+    league_adjustment: false
+    missing_handling: "NA"
+
+  progressive_passes_p90:
+    display_name: "Progressive passes / 90 (proxy)"
+    definition: "Pass progression rate proxy from available progressive / g+ passing contribution."
+    unit: "per 90 (proxy)"
+    source: "ASA (derived)"
+    native_or_proxy: "proxy"
+    derivation: "Derived progressive-pass involvement from public ASA fields / g+ passing"
+    direction: "higher_better"
+    soccer_rationale: "Vertical progression for build-up and progressive CBs/FBs."
+    limitation: "Exact progressive-pass definitions can differ by provider."
+    shrinkage: true
+    league_adjustment: false
+    missing_handling: "NA"
+
+  progressive_carries_p90:
+    display_name: "Progressive carries / 90 (proxy)"
+    definition: "Ball-carrying progression rate proxy."
+    unit: "per 90 (proxy)"
+    source: "ASA (derived)"
+    native_or_proxy: "proxy"
+    derivation: "Derived from carry / dribbling progression signals in public ASA data"
+    direction: "higher_better"
+    soccer_rationale: "Transition and progressive fullback/winger profiles."
+    limitation: "Proxy for carry volume/quality."
+    shrinkage: true
+    league_adjustment: false
+    missing_handling: "NA"
+
+  progressive_passes_received_p90:
+    display_name: "Progressive passes received / 90"
+    definition: "How often the player receives progressive passes into advanced areas."
+    unit: "per 90"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Receiving progression involvement when available; else NA"
+    direction: "higher_better"
+    soccer_rationale: "Occupation of progressive space in transition."
+    limitation: "Often sparse in public extracts — may reduce Role Fit coverage."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA — reduces coverage"
+
+  carries_into_final_third_p90:
+    display_name: "Carries into final third / 90"
+    definition: "Carries that enter the final third per 90."
+    unit: "per 90"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Final-third carry involvement when available"
+    direction: "higher_better"
+    soccer_rationale: "Transition threat into the box."
+    limitation: "May be unavailable for many players."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  successful_dribbles_p90:
+    display_name: "Successful dribbles / 90"
+    definition: "Successful take-ons / dribbles per 90 when available."
+    unit: "per 90"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Dribble success rate × volume when fields exist"
+    direction: "higher_better"
+    soccer_rationale: "1v1 threat for transition wingers."
+    limitation: "Often missing — excluded rather than filled."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  defensive_actions_p90:
+    display_name: "Defensive actions / 90"
+    definition: "Aggregate defensive action rate supporting pressing and ball-winning roles."
+    unit: "per 90"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Combined defensive engagement rates from available ASA defensive fields / g+"
+    direction: "higher_better"
+    soccer_rationale: "Overall defensive workload."
+    limitation: "Composite proxy."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  turnovers_forced_p90:
+    display_name: "Turnovers forced / 90"
+    definition: "Forced turnovers / regains attributable to the player's defensive pressure."
+    unit: "per 90"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Often unavailable in public extracts; stays NA when not observed"
+    direction: "higher_better"
+    soccer_rationale: "High-press effectiveness."
+    limitation: "Frequently missing — reduces Pressing Striker coverage."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  progressive_runs_p90:
+    display_name: "Progressive runs / 90"
+    definition: "Channel runs / progressive attacking movement rate."
+    unit: "per 90"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Often unavailable; NA when not observed"
+    direction: "higher_better"
+    soccer_rationale: "Depth runs for pressing strikers."
+    limitation: "Sparse public coverage."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  ball_retention:
+    display_name: "Ball retention"
+    definition: "Ability to keep possession under pressure / secure layoffs."
+    unit: "index / rate"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Retention-related public metrics when available"
+    direction: "higher_better"
+    soccer_rationale: "Link-up and secure receiving for forwards."
+    limitation: "Proxy; may be missing."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  transition_involvement:
+    display_name: "Transition involvement"
+    definition: "Involvement in early transition moments after regain or loss."
+    unit: "index / rate"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Often unavailable in public extracts; NA when not observed"
+    direction: "higher_better"
+    soccer_rationale: "Critical for transition roles."
+    limitation: "Frequently missing — do not invent values."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  fouls_won_ratio:
+    display_name: "Fouls won ratio"
+    definition: "Share of fouls drawn relative to engagement."
+    unit: "ratio"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Fouls won / relevant engagement when available"
+    direction: "higher_better"
+    soccer_rationale: "Duel craft for midfield winners."
+    limitation: "Often missing."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  pass_completion_under_pressure:
+    display_name: "Pass completion under pressure"
+    definition: "Passing accuracy when pressed."
+    unit: "percentage"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Under-pressure completion when available"
+    direction: "higher_better"
+    soccer_rationale: "Security after regain for ball-winning midfielders."
+    limitation: "May be unavailable."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  aerial_win_pct:
+    display_name: "Aerial win %"
+    definition: "Share of aerial duels won."
+    unit: "percentage"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Aerial wins / aerials when available"
+    direction: "higher_better"
+    soccer_rationale: "Set pieces and long-ball security."
+    limitation: "May be missing for some leagues/players."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  pass_completion_pct:
+    display_name: "Pass completion %"
+    definition: "Overall pass completion percentage."
+    unit: "percentage"
+    source: "ASA"
+    native_or_proxy: "native"
+    derivation: null
+    direction: "higher_better"
+    soccer_rationale: "Security in possession for progressive CBs."
+    limitation: "Does not measure progressive value alone."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  long_pass_completion_pct:
+    display_name: "Long pass completion %"
+    definition: "Completion rate on long passes."
+    unit: "percentage"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Long-pass completion when available"
+    direction: "higher_better"
+    soccer_rationale: "Switching and progressive CB distribution."
+    limitation: "May be missing."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  crosses_p90:
+    display_name: "Crosses / 90"
+    definition: "Crossing attempts per 90."
+    unit: "per 90"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Cross volume when available"
+    direction: "higher_better"
+    soccer_rationale: "Overlapping fullback width."
+    limitation: "Volume ≠ quality; xA also used."
+    shrinkage: true
+    league_adjustment: false
+    missing_handling: "NA"
+
+  touches_att_third_p90:
+    display_name: "Touches in attacking third / 90"
+    definition: "Touches in the attacking third per 90."
+    unit: "per 90"
+    source: "ASA / derived"
+    native_or_proxy: "proxy"
+    derivation: "Attacking-third touch volume when available"
+    direction: "higher_better"
+    soccer_rationale: "High fullback involvement."
+    limitation: "May be missing."
+    shrinkage: false
+    league_adjustment: false
+    missing_handling: "NA"
+
+  goals_added_p90:
+    display_name: "Goals Added / 90"
+    definition: "ASA Goals Added total contribution per 90."
+    unit: "per 90"
+    source: "ASA"
+    native_or_proxy: "native"
+    derivation: null
+    direction: "higher_better"
+    soccer_rationale: "Broad on-ball value framework."
+    limitation: "Action-category blends may overlap with other inputs if stacked carelessly."
+    shrinkage: true
+    league_adjustment: true
+    missing_handling: "NA"

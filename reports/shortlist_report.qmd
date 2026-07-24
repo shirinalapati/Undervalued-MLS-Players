@@ -1,0 +1,32 @@
+---
+title: "Recruitment Shortlist Memo"
+format:
+  html:
+    theme: flatly
+params:
+  params_rds: "data/processed/report_params_player.rds"
+---
+
+```{r}
+#| echo: false
+#| message: false
+dat <- readRDS(params$params_rds)
+sl <- dat$shortlist
+```
+
+# Shortlist memo
+
+Club-conditioned targets (public-data decision support). Full memo template: `reports/shortlist_report.Rmd`.
+
+```{r}
+#| echo: false
+sl |>
+  dplyr::group_by(club_id) |>
+  dplyr::slice_head(n = 15) |>
+  dplyr::ungroup() |>
+  dplyr::transmute(
+    Club = club_id, Rank = rank, Player = display_name,
+    Overall = round(score_overall, 1), Rec = recommendation
+  ) |>
+  knitr::kable()
+```

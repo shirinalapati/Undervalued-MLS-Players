@@ -1,0 +1,33 @@
+# Dependency manifest for renv / install.packages
+Package: mlsrecruitmentintelligence
+Title: MLS Recruitment Intelligence
+Version: 0.1.0
+Authors@R: person("Portfolio", "Author", role = c("aut", "cre"), email = "you@example.com")
+Description: Identify attainable and undervalued MLS recruitment targets with
+  role-conditioned scoring, SQL storage, and a Shiny scouting dashboard.
+License: MIT
+Depends: R (>= 4.3.0)
+Imports:
+    DBI,
+    DT,
+    RSQLite,
+    dplyr,
+    ggplot2,
+    here,
+    jsonlite,
+    openxlsx,
+    purrr,
+    readr,
+    rmarkdown,
+    shiny,
+    tibble,
+    tidyr,
+    yaml,
+    markdown
+Suggests:
+    itscalledsoccer,
+    testthat,
+    worldfootballR
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.0

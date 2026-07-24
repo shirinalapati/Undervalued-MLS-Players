@@ -1,0 +1,233 @@
+# Single source of truth for formulas, labels, gates, and hybrid coefficient taxonomy.
+# About page, methodology docs, Excel exports, and README must render from this file.
+# model_version bumps when weights, invariants, or hybrid contracts change.
+
+model_version: "0.3.0"
+data_version: "2026.07.23-asa-live"
+effective_date: "2026-07-23"
+status: "unvalidated_heuristic"
+forecast_horizon: "next_complete_mls_season"
+forecast_horizon_label: "Next complete MLS season"
+contribution_label: "Estimated Near-Term Contribution"
+value_label: "Compensation-Adjusted Value Index"
+league_tier_label: "Assumed league-strength adjustments"
+
+# ---------------------------------------------------------------------------
+# Hybrid coefficient taxonomy
+# learned     = fit from historical outcomes when sample allows
+# configurable = club / policy preference (never pretend to be objective truth)
+# rule        = transparent logic; tests required; not a black-box classifier
+# ---------------------------------------------------------------------------
+hybrid:
+  principle: >
+    Learn what is likely to happen. Configure what a club should value.
+    Use transparent rules when labels are scarce. Validate all three.
+  artifact_dir: "data/processed/models"
+  time_split:
+    train_through_season: 2023
+    validate_season: 2024
+    test_season: 2025
+    live_cutoff_rule: "train_only_on_data_available_before_prediction_cutoff"
+
+  learned:
+    contribution:
+      status: "fallback_heuristic"   # fitted | fallback_heuristic
+      preferred_models: ["ridge", "elastic_net"]
+      comparison_models: ["gradient_boosting"]
+      targets:
+        - "next_season_goals_added"
+        - "next_12m_contribution"
+        - "above_average_mls_contributor"
+      artifact: "contribution_ridge.rds"
+    league_translation:
+      status: "assumed_tier_priors"
+      artifact: "league_translation.rds"
+      fallback_label: "Assumed league-strength adjustments"
+    age_curves:
+      status: "fallback_priors"
+      artifact: "age_curves.rds"
+      position_groups: ["F", "W_AM", "CM", "FB", "CB", "GK"]
+    shrinkage:
+      status: "fallback_fixed_m0"
+      artifact: "shrinkage_m0.json"
+      default_m0: 600
+    cost_tier:
+      status: "unknown_when_unobserved"
+      artifact: "cost_tier.rds"
+      label: "Estimated cost tier (not transfer fee)"
+    acquisition_probability:
+      status: "fallback_heuristic"
+      artifact: "acquisition_prob.rds"
+
+  configurable:
+    club_preferences:
+      - development_vs_immediate
+      - budget_tolerance
+      - pressing_vs_possession
+      - domestic_player_preference
+      - risk_tolerance
+      - target_age_range
+      - starter_vs_depth
+    decision_layer:
+      note: "Policy choice — not an objectively learnable universal blend"
+      source: "config/club_profiles.yml + dashboard overrides + model_spec.recruitment_priority"
+
+  rules:
+    - recommendation_invariants
+    - role_metric_sets_expert_defined
+    - coverage_gates
+    - feasibility_gate
+    - missing_metrics_are_na
+
+recommendation_labels:
+  priority_review: "Priority Review"
+  development_watch: "Development Watch"
+  monitor: "Monitor"
+  low_priority: "Low Priority"
+
+relationship_fallback: "No clear recruitment advantage identified"
+
+invariants:
+  lower_cost:
+    require_known_costs: true
+    contribution_tolerance: 5.0
+  immediate_upgrade:
+    min_contribution_margin: 8.0
+    min_role_fit: 55.0
+    min_confidence: "medium"
+  developmental_successor:
+    min_age_gap_years: 1.0
+    min_upside: 60.0
+    min_role_fit: 45.0
+    min_pathway: 40.0
+
+coverage:
+  role_fit_unavailable_below: 0.50
+  max_confidence_low_below: 0.70
+  max_confidence_medium_below: 0.85
+
+# Default decision-layer policy (clubs override via profiles / UI)
+sporting_score:
+  contribution: 0.55
+  role_fit: 0.30
+  development: 0.15
+
+recruitment_priority:
+  sporting: 0.65
+  style: 0.15
+  compensation_value: 0.15
+  pathway: 0.05
+
+# Example club policy templates (configurable — not learned as truth)
+policy_templates:
+  win_now:
+    contribution: 0.60
+    role_fit: 0.20
+    feasibility: 0.10
+    value: 0.10
+    development: 0.00
+  development:
+    contribution: 0.35
+    role_fit: 0.25
+    development: 0.25
+    value: 0.15
+    feasibility: 0.00
+
+feasibility_gate:
+  low_threshold: 35.0
+
+# Heuristic contribution blends — used ONLY until learned artifact is fitted.
+# Prefer ASA g+ components; avoid stacking total g+ with overlapping xG casually.
+contribution_by_role:
+  pressing_forward:
+    goals_added_shooting: 0.30
+    goals_added_receiving: 0.25
+    goals_added_defending: 0.25
+    pct_npxg: 0.20
+  target_forward:
+    goals_added_shooting: 0.35
+    goals_added_receiving: 0.30
+    pct_npxg: 0.20
+    pct_xa: 0.15
+  creative_10:
+    goals_added_passing: 0.30
+    goals_added_receiving: 0.25
+    pct_xa: 0.25
+    goals_added_dribbling: 0.20
+  box_to_box_8:
+    goals_added_passing: 0.25
+    goals_added_defending: 0.30
+    goals_added_receiving: 0.25
+    goals_added_dribbling: 0.20
+  holding_6:
+    goals_added_defending: 0.40
+    goals_added_passing: 0.30
+    goals_added_receiving: 0.20
+    goals_added_fouling: -0.10
+  progressive_cb:
+    goals_added_passing: 0.35
+    goals_added_defending: 0.35
+    goals_added_receiving: 0.20
+    goals_added_fouling: -0.10
+  ball_winning_midfielder:
+    goals_added_defending: 0.45
+    goals_added_passing: 0.25
+    goals_added_receiving: 0.20
+    goals_added_fouling: -0.10
+  transition_winger:
+    goals_added_dribbling: 0.30
+    goals_added_receiving: 0.25
+    goals_added_shooting: 0.25
+    goals_added_passing: 0.20
+  inverted_winger:
+    goals_added_dribbling: 0.25
+    goals_added_shooting: 0.25
+    goals_added_receiving: 0.25
+    pct_xa: 0.25
+  attacking_fullback:
+    goals_added_passing: 0.30
+    goals_added_dribbling: 0.25
+    goals_added_defending: 0.25
+    goals_added_receiving: 0.20
+  defensive_fullback:
+    goals_added_defending: 0.45
+    goals_added_passing: 0.30
+    goals_added_receiving: 0.25
+  default:
+    goals_added_shooting: 0.20
+    goals_added_passing: 0.20
+    goals_added_receiving: 0.20
+    goals_added_dribbling: 0.15
+    goals_added_defending: 0.25
+
+age_curves:
+  # Fallback priors until learned curves are fitted (development input only).
+  F: 25.5
+  W_AM: 25.8
+  CM: 26.5
+  FB: 26.8
+  CB: 27.2
+  GK: 29.0
+  M: 26.5
+  D: 27.0
+  default: 26.5
+
+proxy_metrics:
+  - pressures_p90
+  - tackles_p90
+  - interceptions_p90
+  - progressive_passes_p90
+  - progressive_carries_p90
+  - turnovers_forced_p90
+  - progressive_runs_p90
+  - ball_retention_p90
+  - transition_involvement_p90
+  - aerial_win_pct
+  - crosses_p90
+  - fouls_won_ratio
+
+data_cutoffs:
+  performance_through: null
+  mlspa_compensation_as_of: null
+  official_roster_profile_as_of: null
+  transactions_through: null

@@ -1,0 +1,123 @@
+---
+title: "Player Scouting Report"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+params:
+  params_rds: "PLACEHOLDER"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+`%||%` <- function(a, b) if (!is.null(a)) a else b
+dat <- readRDS(params$params_rds)
+p <- dat$player
+cutoff <- dat$cutoff_label %||% p$data_cutoff_label %||% "Cutoff unknown"
+period_lab <- p$season_label %||% "Evaluation period not specified"
+is_syn <- isTRUE(dat$provenance$is_synthetic) || isTRUE(p$is_synthetic)
+```
+
+# `r p$display_name`
+
+**Internal scouting document — decision support only**
+
+```{r banner}
+if (is_syn) {
+  cat("**SYNTHETIC DEMO DATA — NOT A GENUINE SCOUTING REPORT**\n\n")
+} else {
+  cat(paste0("**", cutoff, "**  \n"))
+  cat(paste0("**Evaluation period:** ", period_lab, "  \n"))
+  if (!isTRUE(p$stats_are_full_season)) {
+    cat("**Note:** Any 2026 statistics are season-to-date, not full-season.\n\n")
+  }
+}
+```
+
+| Field | Detail |
+|------|--------|
+| Current competition | `r toupper(p$league_id)` |
+| Age | `r p$age` |
+| Position group | `r p$position_group` |
+| Evaluated role | `r p$role_id` |
+| Minutes (period) | `r round(p$minutes)` |
+| Confidence | `r p$confidence` |
+| Data quality | `r round(p$data_quality)` |
+| Data cutoff | `r cutoff` |
+
+## Statistical profile
+
+Projected MLS proxies (per 90, translated):
+
+- nPxG: **`r round(p$proj_npxg_p90, 3)`**
+- xA: **`r round(p$proj_xa_p90, 3)`**
+- Goals Added: **`r round(p$proj_gplus_p90, 3)`**
+
+```{r radar-bar}
+scores <- tibble::tibble(
+  component = c("Projected MLS", "Role fit", "Feasibility", "Development", "Financial value", "Risk"),
+  value = c(p$score_projected_mls, p$score_role_fit, p$score_feasibility,
+            p$score_development, p$score_financial_value, p$score_risk)
+)
+ggplot(scores, aes(reorder(component, value), value, fill = component)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Component scores (0–100)", x = NULL, y = NULL) +
+  theme_minimal(base_size = 12)
+```
+
+## Projected MLS performance
+
+Overall projected contribution score: **`r round(p$score_projected_mls, 1)`**.  
+Interpretation reflects league translation priors, sample-size shrinkage, and age context. This is **not** a guaranteed MLS outcome.
+
+## Acquisition feasibility
+
+Feasibility score: **`r round(p$score_feasibility, 1)`** (cost tier `r p$cost_tier`).  
+Treat as a public-data attainability prior; confirm contract/roster reality with football ops.
+
+## Financial-value assessment
+
+Financial value score: **`r round(p$score_financial_value, 1)`**.  
+Surplus is standardized contribution versus estimated cost tier/salary — not a literal NPV in dollars.
+
+## Development upside
+
+Development score: **`r round(p$score_development, 1)`**.  
+Factors: age vs positional peak, YoY signal, minutes trajectory.
+
+## Main strengths
+
+`r p$strengths`
+
+## Main risks
+
+`r p$risks_text`
+
+## Video scouting questions
+
+`r p$video_questions`
+
+## Recommendation
+
+```{r rec}
+rec <- dplyr::case_when(
+  p$score_feasibility < 30 ~ "Pass",
+  p$score_overall >= 70 & p$score_risk <= 45 ~ "Pursue",
+  p$score_development >= 70 & p$score_overall >= 55 ~ "Development target",
+  p$score_overall >= 55 ~ "Monitor",
+  TRUE ~ "Pass"
+)
+```
+
+### **`r rec`**
+
+Overall score: **`r round(p$score_overall, 1)`** (risk `r round(p$score_risk, 1)`).
+
+---
+
+*Methodology and limitations: `docs/methodology.md`, `docs/limitations.md`.*

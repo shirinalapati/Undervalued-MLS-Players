@@ -1,0 +1,52 @@
+# Recommendation invariants and cautious labels.
+# Decision labels must never contradict these rules.
+
+model_version_ref: "0.3.0"
+
+labels:
+  priority_review: "Priority Review"
+  monitor: "Monitor"
+  development_watch: "Development Watch"
+  depth_consideration: "Depth Consideration"
+  low_priority: "Low Priority"
+  insufficient_evidence: "Insufficient Evidence"
+
+relationship_fallback: "No clear recruitment advantage identified"
+
+# Stronger labels (e.g. Pursue) require validated thresholds — disabled until then
+allow_strong_pursue_label: false
+
+invariants:
+  immediate_upgrade:
+    min_contribution_margin: 8.0
+    min_role_fit: 55.0
+    min_confidence: "medium"
+    disallow_cost_or_age_alone: true
+  direct_replacement:
+    min_role_similarity: 70.0
+    contribution_tolerance: 5.0
+  lower_cost:
+    require_known_costs: true
+    contribution_tolerance: 5.0
+    min_role_fit: 45.0
+  developmental_successor:
+    min_age_gap_years: 1.0
+    min_upside: 60.0
+    min_role_fit: 45.0
+    min_pathway: 40.0
+  complementary:
+    min_complementarity: 55.0
+  rotation_depth:
+    min_role_similarity: 55.0
+    max_contribution_margin_for_depth: 8.0
+
+required_recommendation_fields:
+  - why_surfaced
+  - what_improves
+  - what_could_be_lost
+  - cost_feasibility_context
+  - main_uncertainty
+  - video_questions
+  - data_coverage_statement
+  - model_version
+  - data_cutoff_dates

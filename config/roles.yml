@@ -1,0 +1,104 @@
+# Role-specific metric weights for Tactical Role Fit (0–100).
+# Weights within each role should sum to ~1.0.
+# Missing metrics stay NA (never filled with neutral 50). Coverage gates confidence
+# per config/model_spec.yml. Several dictionary names map to g+-derived proxies —
+# not ASA native summary fields (see model_spec.proxy_metrics).
+
+roles:
+  pressing_striker:
+    display_name: "Pressing Striker"
+    position_group: "FW"
+    description: >
+      High-press centre forward who forces turnovers, runs channels in transition,
+      and converts chance volume rather than relying solely on hold-up play.
+    metrics:
+      pressures_p90: 0.18
+      defensive_actions_p90: 0.12
+      turnovers_forced_p90: 0.12
+      progressive_runs_p90: 0.10
+      npxg_p90: 0.18
+      shots_p90: 0.10
+      ball_retention: 0.08
+      transition_involvement: 0.12
+
+  transition_winger:
+    display_name: "Transition Winger"
+    position_group: "W"
+    description: >
+      Wide attacker who carries or receives in transition, progresses the ball
+      vertically, and creates/finishes early chances after regain.
+    metrics:
+      progressive_carries_p90: 0.18
+      progressive_passes_received_p90: 0.10
+      carries_into_final_third_p90: 0.12
+      xa_p90: 0.14
+      npxg_p90: 0.14
+      pressures_p90: 0.12
+      successful_dribbles_p90: 0.10
+      transition_involvement: 0.10
+
+  ball_winning_midfielder:
+    display_name: "Ball-Winning Midfielder"
+    position_group: "CM"
+    description: >
+      Central midfielder prioritized for duels, interceptions, and recoveries,
+      with enough progressive passing to start attacks after regain.
+    metrics:
+      tackles_p90: 0.16
+      interceptions_p90: 0.16
+      pressures_p90: 0.14
+      fouls_won_ratio: 0.08
+      progressive_passes_p90: 0.14
+      pass_completion_under_pressure: 0.12
+      aerial_win_pct: 0.10
+      defensive_actions_p90: 0.10
+
+  progressive_center_back:
+    display_name: "Progressive Center Back"
+    position_group: "CB"
+    description: >
+      Centre back who progresses with line-breaking passes or carries while
+      remaining secure in open-play defending.
+    metrics:
+      progressive_passes_p90: 0.22
+      progressive_carries_p90: 0.14
+      pass_completion_pct: 0.12
+      long_pass_completion_pct: 0.10
+      interceptions_p90: 0.12
+      aerial_win_pct: 0.12
+      tackles_p90: 0.08
+      pressures_p90: 0.10
+
+  overlapping_fullback:
+    display_name: "Overlapping Fullback"
+    position_group: "FB"
+    description: >
+      Fullback who provides width high up the pitch, crosses/cutbacks, and
+      recovers defensively in transition.
+    metrics:
+      crosses_p90: 0.14
+      xa_p90: 0.14
+      progressive_carries_p90: 0.14
+      touches_att_third_p90: 0.12
+      pressures_p90: 0.12
+      tackles_p90: 0.10
+      interceptions_p90: 0.10
+      progressive_passes_p90: 0.14
+
+# Placeholder stubs for later expansion (not used in MVP scoring)
+future_roles:
+  - target_forward
+  - channel_running_striker
+  - link_up_forward
+  - creative_winger
+  - inside_forward
+  - chance_creating_am
+  - deep_progressor
+  - box_to_box_midfielder
+  - possession_controller
+  - inverted_fullback
+  - defensive_fullback
+  - transition_wingback
+  - aggressive_front_foot_defender
+  - recovery_defender
+  - aerially_dominant_center_back

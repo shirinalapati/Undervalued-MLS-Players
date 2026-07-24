@@ -1,0 +1,53 @@
+# Export settings — Excel / Word-PDF / PowerPoint must use live engine outputs.
+
+model_version_ref: "0.3.0"
+
+excel:
+  workbook_name_pattern: "MLS_RI_{club}_{role}_{date}.xlsx"
+  required_sheets:
+    - "Executive Summary"
+    - "Shortlist"
+    - "Incumbent vs Target"
+    - "Player Profiles"
+    - "Roster Needs"
+    - "Club Profile"
+    - "Metric Dictionary"
+    - "Methodology"
+    - "Data Sources"
+    - "Model Validation"
+    - "Assumptions and Limitations"
+  formatting:
+    filters: true
+    frozen_panes: true
+    tables: true
+    conditional_formatting: true
+  required_metadata:
+    - model_version
+    - data_version
+    - performance_through
+    - mlspa_compensation_as_of
+    - official_roster_profile_as_of
+    - transactions_through
+    - forecast_horizon
+    - validation_status
+
+word_pdf:
+  enabled: false  # Phase 17 — not started
+  template: "reports/templates/scouting_one_pager.Rmd"
+  output: ["docx", "pdf"]
+
+powerpoint:
+  enabled: false  # Phase 17 — not started
+  slides:
+    - recruitment_objective
+    - club_roster_context
+    - shortlist
+    - top_candidates
+    - incumbent_comparisons
+    - risks_uncertainty
+    - recommendation_next_actions
+
+rules:
+  block_genuine_export_if_synthetic: true
+  must_match_live_app_calculations: true
+  no_manually_typed_analytical_outputs: true

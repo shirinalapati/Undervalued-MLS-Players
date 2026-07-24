@@ -1,0 +1,50 @@
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+renv/library/
+renv/python/
+renv/staging/
+*.Rproj
+
+# Data (keep structure; ignore large/local pulls)
+data/raw/**
+!data/raw/.gitkeep
+data/interim/**
+!data/interim/.gitkeep
+data/processed/**
+!data/processed/.gitkeep
+!data/external/
+data/external/**
+!data/external/.gitkeep
+!data/external/demo/
+!data/external/demo/**
+
+# Database artifacts
+database/*.sqlite
+database/*.db
+*.sqlite
+*.db
+
+# Exports and caches
+exports/**
+!exports/.gitkeep
+.cache/
+tmp/
+
+# Secrets / local overrides
+config/local.yml
+.env
+.Renviron
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Quarto / Shiny
+*_cache/
+.quarto/
+rsconnect/

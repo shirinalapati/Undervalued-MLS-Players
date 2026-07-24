@@ -1,0 +1,106 @@
+# Transparent league-strength priors for MVP translation into MLS.
+# Factor interpretation: expected_mls_metric ≈ source_metric * translation_factor
+# Values < 1 mean production is expected to compress when moving to MLS.
+# These are priors for the MVP — replace with transfer-based estimates when samples allow.
+
+tiers:
+  mls:
+    tier: 1
+    label: "MLS"
+    translation_factor_attack: 1.00
+    translation_factor_creation: 1.00
+    translation_factor_defense: 1.00
+    uncertainty: 0.05
+    notes: "Destination league; identity translation."
+
+  mlsnp:
+    tier: 2
+    label: "MLS NEXT Pro"
+    translation_factor_attack: 0.72
+    translation_factor_creation: 0.75
+    translation_factor_defense: 0.80
+    uncertainty: 0.18
+    notes: "Developmental pathway; large minutes inflation risk for prospects."
+
+  uslc:
+    tier: 2
+    label: "USL Championship"
+    translation_factor_attack: 0.78
+    translation_factor_creation: 0.80
+    translation_factor_defense: 0.82
+    uncertainty: 0.15
+    notes: "Common feeder; better sample of senior professionals than NEXT Pro."
+
+  usl1:
+    tier: 3
+    label: "USL League One"
+    translation_factor_attack: 0.65
+    translation_factor_creation: 0.68
+    translation_factor_defense: 0.72
+    uncertainty: 0.22
+    notes: "Lower tier; use cautiously."
+
+  cpl:
+    tier: 3
+    label: "Canadian Premier League"
+    translation_factor_attack: 0.70
+    translation_factor_creation: 0.72
+    translation_factor_defense: 0.75
+    uncertainty: 0.20
+    notes: "Extensible; limited ASA coverage — FBref / public sources later."
+
+  ncaa:
+    tier: 4
+    label: "NCAA"
+    translation_factor_attack: 0.55
+    translation_factor_creation: 0.58
+    translation_factor_defense: 0.60
+    uncertainty: 0.30
+    notes: "High uncertainty; draft/SuperDraft pathway only."
+
+  international_mid:
+    tier: 2
+    label: "Selected mid-tier international"
+    translation_factor_attack: 0.85
+    translation_factor_creation: 0.85
+    translation_factor_defense: 0.88
+    uncertainty: 0.20
+    notes: "Placeholder tier for accessible non-elite leagues later."
+
+  elite_big5:
+    tier: 0
+    label: "Elite Big-5 (restricted)"
+    translation_factor_attack: 1.15
+    translation_factor_creation: 1.12
+    translation_factor_defense: 1.10
+    uncertainty: 0.25
+    notes: >
+      Excluded from MVP player pool by default. Only consider under explicit
+      availability filters (expiring contract, low minutes, loan, aging, NA return).
+
+position_modifiers:
+  # Mild position-specific dampening when translating upward/downward
+  FW:
+    attack: 1.00
+    creation: 0.98
+    defense: 1.02
+  W:
+    attack: 1.00
+    creation: 1.00
+    defense: 1.00
+  CM:
+    attack: 0.98
+    creation: 1.00
+    defense: 1.00
+  FB:
+    attack: 0.97
+    creation: 0.98
+    defense: 1.00
+  CB:
+    attack: 0.95
+    creation: 0.97
+    defense: 1.00
+  GK:
+    attack: 1.00
+    creation: 1.00
+    defense: 1.00

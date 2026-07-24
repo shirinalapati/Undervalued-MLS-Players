@@ -1,0 +1,552 @@
+# Public-data-based estimated club profiles (NOT internal recruitment plans).
+# Users should override weights in the Shiny dashboard.
+# Sources informing estimates: recent style metrics, squad age patterns,
+# acquisition history, salary allocation patterns, and youth minutes (where public).
+
+meta:
+  label: "Public-data-based estimated club profiles"
+  season: 2025
+  disclaimer: >
+    These profiles are analytical priors for portfolio demonstration. They are not
+    claims about confidential sporting strategy.
+
+clubs:
+  - club_id: atl
+    club_name: "Atlanta United"
+    conference: "East"
+    tactical_archetype: "possession_transition"
+    recruitment_strategy: "mixed_star_and_development"
+    budget_tier: "high"
+    average_squad_age: 26.5
+    domestic_player_priority: 0.45
+    development_priority: 0.45
+    immediate_impact_priority: 0.55
+    pressing_weight: 0.45
+    possession_weight: 0.55
+    transition_weight: 0.50
+    progression_weight: 0.55
+    defensive_weight: 0.40
+    financial_value_weight: 0.40
+
+  - club_id: austin
+    club_name: "Austin FC"
+    conference: "West"
+    tactical_archetype: "possession"
+    recruitment_strategy: "controlled_spend"
+    budget_tier: "medium"
+    average_squad_age: 27.0
+    domestic_player_priority: 0.50
+    development_priority: 0.40
+    immediate_impact_priority: 0.60
+    pressing_weight: 0.40
+    possession_weight: 0.65
+    transition_weight: 0.35
+    progression_weight: 0.60
+    defensive_weight: 0.45
+    financial_value_weight: 0.50
+
+  - club_id: chicago
+    club_name: "Chicago Fire FC"
+    conference: "East"
+    tactical_archetype: "balanced"
+    recruitment_strategy: "rebuild_value"
+    budget_tier: "medium"
+    average_squad_age: 26.0
+    domestic_player_priority: 0.55
+    development_priority: 0.55
+    immediate_impact_priority: 0.45
+    pressing_weight: 0.45
+    possession_weight: 0.50
+    transition_weight: 0.45
+    progression_weight: 0.50
+    defensive_weight: 0.50
+    financial_value_weight: 0.60
+
+  - club_id: cincinnati
+    club_name: "FC Cincinnati"
+    conference: "East"
+    tactical_archetype: "high_press_transition"
+    recruitment_strategy: "compete_now_plus_depth"
+    budget_tier: "high"
+    average_squad_age: 27.5
+    domestic_player_priority: 0.40
+    development_priority: 0.35
+    immediate_impact_priority: 0.70
+    pressing_weight: 0.70
+    possession_weight: 0.45
+    transition_weight: 0.65
+    progression_weight: 0.50
+    defensive_weight: 0.55
+    financial_value_weight: 0.35
+
+  - club_id: colorado
+    club_name: "Colorado Rapids"
+    conference: "West"
+    tactical_archetype: "direct_transition"
+    recruitment_strategy: "budget_efficiency"
+    budget_tier: "low_medium"
+    average_squad_age: 26.8
+    domestic_player_priority: 0.55
+    development_priority: 0.50
+    immediate_impact_priority: 0.50
+    pressing_weight: 0.55
+    possession_weight: 0.35
+    transition_weight: 0.65
+    progression_weight: 0.40
+    defensive_weight: 0.55
+    financial_value_weight: 0.70
+
+  - club_id: columbus
+    club_name: "Columbus Crew"
+    conference: "East"
+    tactical_archetype: "possession"
+    recruitment_strategy: "system_fit"
+    budget_tier: "medium_high"
+    average_squad_age: 27.2
+    domestic_player_priority: 0.45
+    development_priority: 0.40
+    immediate_impact_priority: 0.60
+    pressing_weight: 0.40
+    possession_weight: 0.75
+    transition_weight: 0.35
+    progression_weight: 0.70
+    defensive_weight: 0.45
+    financial_value_weight: 0.45
+
+  - club_id: dallas
+    club_name: "FC Dallas"
+    conference: "West"
+    tactical_archetype: "development_possession"
+    recruitment_strategy: "academy_first"
+    budget_tier: "medium"
+    average_squad_age: 24.5
+    domestic_player_priority: 0.70
+    development_priority: 0.80
+    immediate_impact_priority: 0.35
+    pressing_weight: 0.50
+    possession_weight: 0.55
+    transition_weight: 0.45
+    progression_weight: 0.55
+    defensive_weight: 0.45
+    financial_value_weight: 0.65
+
+  - club_id: dc
+    club_name: "D.C. United"
+    conference: "East"
+    tactical_archetype: "rebuild_balanced"
+    recruitment_strategy: "value_rebuild"
+    budget_tier: "medium"
+    average_squad_age: 26.5
+    domestic_player_priority: 0.55
+    development_priority: 0.55
+    immediate_impact_priority: 0.50
+    pressing_weight: 0.50
+    possession_weight: 0.45
+    transition_weight: 0.50
+    progression_weight: 0.45
+    defensive_weight: 0.50
+    financial_value_weight: 0.65
+
+  - club_id: houston
+    club_name: "Houston Dynamo FC"
+    conference: "West"
+    tactical_archetype: "organized_defensive"
+    recruitment_strategy: "value_and_veterans"
+    budget_tier: "medium"
+    average_squad_age: 28.0
+    domestic_player_priority: 0.50
+    development_priority: 0.35
+    immediate_impact_priority: 0.65
+    pressing_weight: 0.45
+    possession_weight: 0.45
+    transition_weight: 0.50
+    progression_weight: 0.40
+    defensive_weight: 0.70
+    financial_value_weight: 0.55
+
+  - club_id: sportingkc
+    club_name: "Sporting Kansas City"
+    conference: "West"
+    tactical_archetype: "balanced"
+    recruitment_strategy: "mixed"
+    budget_tier: "medium"
+    average_squad_age: 27.5
+    domestic_player_priority: 0.55
+    development_priority: 0.40
+    immediate_impact_priority: 0.55
+    pressing_weight: 0.45
+    possession_weight: 0.50
+    transition_weight: 0.45
+    progression_weight: 0.50
+    defensive_weight: 0.50
+    financial_value_weight: 0.55
+
+  - club_id: laf
+    club_name: "LAFC"
+    conference: "West"
+    tactical_archetype: "high_press_possession"
+    recruitment_strategy: "star_plus_complement"
+    budget_tier: "very_high"
+    average_squad_age: 27.8
+    domestic_player_priority: 0.35
+    development_priority: 0.30
+    immediate_impact_priority: 0.75
+    pressing_weight: 0.65
+    possession_weight: 0.60
+    transition_weight: 0.55
+    progression_weight: 0.60
+    defensive_weight: 0.45
+    financial_value_weight: 0.25
+
+  - club_id: lag
+    club_name: "LA Galaxy"
+    conference: "West"
+    tactical_archetype: "attacking_possession"
+    recruitment_strategy: "marquee_attack"
+    budget_tier: "very_high"
+    average_squad_age: 28.2
+    domestic_player_priority: 0.35
+    development_priority: 0.30
+    immediate_impact_priority: 0.80
+    pressing_weight: 0.35
+    possession_weight: 0.65
+    transition_weight: 0.45
+    progression_weight: 0.60
+    defensive_weight: 0.35
+    financial_value_weight: 0.25
+
+  - club_id: miami
+    club_name: "Inter Miami CF"
+    conference: "East"
+    tactical_archetype: "possession"
+    recruitment_strategy: "star_driven"
+    budget_tier: "very_high"
+    average_squad_age: 28.5
+    domestic_player_priority: 0.30
+    development_priority: 0.25
+    immediate_impact_priority: 0.85
+    pressing_weight: 0.35
+    possession_weight: 0.80
+    transition_weight: 0.30
+    progression_weight: 0.75
+    defensive_weight: 0.35
+    financial_value_weight: 0.20
+
+  - club_id: minnesota
+    club_name: "Minnesota United FC"
+    conference: "West"
+    tactical_archetype: "transition"
+    recruitment_strategy: "value_scouting"
+    budget_tier: "medium"
+    average_squad_age: 27.0
+    domestic_player_priority: 0.50
+    development_priority: 0.45
+    immediate_impact_priority: 0.55
+    pressing_weight: 0.55
+    possession_weight: 0.40
+    transition_weight: 0.65
+    progression_weight: 0.45
+    defensive_weight: 0.50
+    financial_value_weight: 0.60
+
+  - club_id: montreal
+    club_name: "CF Montréal"
+    conference: "East"
+    tactical_archetype: "balanced_development"
+    recruitment_strategy: "budget_development"
+    budget_tier: "low_medium"
+    average_squad_age: 25.5
+    domestic_player_priority: 0.60
+    development_priority: 0.65
+    immediate_impact_priority: 0.40
+    pressing_weight: 0.50
+    possession_weight: 0.50
+    transition_weight: 0.50
+    progression_weight: 0.50
+    defensive_weight: 0.50
+    financial_value_weight: 0.70
+
+  - club_id: nashville
+    club_name: "Nashville SC"
+    conference: "East"
+    tactical_archetype: "organized_defensive"
+    recruitment_strategy: "structure_first"
+    budget_tier: "medium"
+    average_squad_age: 28.0
+    domestic_player_priority: 0.55
+    development_priority: 0.35
+    immediate_impact_priority: 0.60
+    pressing_weight: 0.45
+    possession_weight: 0.45
+    transition_weight: 0.40
+    progression_weight: 0.40
+    defensive_weight: 0.70
+    financial_value_weight: 0.55
+
+  - club_id: ne
+    club_name: "New England Revolution"
+    conference: "East"
+    tactical_archetype: "balanced"
+    recruitment_strategy: "value_and_homegrowns"
+    budget_tier: "medium"
+    average_squad_age: 26.5
+    domestic_player_priority: 0.60
+    development_priority: 0.55
+    immediate_impact_priority: 0.45
+    pressing_weight: 0.50
+    possession_weight: 0.50
+    transition_weight: 0.50
+    progression_weight: 0.50
+    defensive_weight: 0.50
+    financial_value_weight: 0.65
+
+  - club_id: nycfc
+    club_name: "New York City FC"
+    conference: "East"
+    tactical_archetype: "possession"
+    recruitment_strategy: "city_group_pathway"
+    budget_tier: "high"
+    average_squad_age: 25.8
+    domestic_player_priority: 0.40
+    development_priority: 0.55
+    immediate_impact_priority: 0.50
+    pressing_weight: 0.50
+    possession_weight: 0.70
+    transition_weight: 0.40
+    progression_weight: 0.65
+    defensive_weight: 0.45
+    financial_value_weight: 0.45
+
+  - club_id: rbnY
+    club_name: "New York Red Bulls"
+    conference: "East"
+    tactical_archetype: "high_press_transition"
+    recruitment_strategy: "pressing_profile_development"
+    budget_tier: "medium"
+    average_squad_age: 25.0
+    domestic_player_priority: 0.55
+    development_priority: 0.70
+    immediate_impact_priority: 0.45
+    pressing_weight: 0.90
+    possession_weight: 0.30
+    transition_weight: 0.85
+    progression_weight: 0.45
+    defensive_weight: 0.60
+    financial_value_weight: 0.65
+
+  - club_id: orlando
+    club_name: "Orlando City SC"
+    conference: "East"
+    tactical_archetype: "possession_attack"
+    recruitment_strategy: "creative_attackers"
+    budget_tier: "medium_high"
+    average_squad_age: 27.0
+    domestic_player_priority: 0.45
+    development_priority: 0.40
+    immediate_impact_priority: 0.60
+    pressing_weight: 0.40
+    possession_weight: 0.65
+    transition_weight: 0.40
+    progression_weight: 0.60
+    defensive_weight: 0.40
+    financial_value_weight: 0.45
+
+  - club_id: philadelphia
+    club_name: "Philadelphia Union"
+    conference: "East"
+    tactical_archetype: "high_press_development"
+    recruitment_strategy: "academy_and_value"
+    budget_tier: "medium"
+    average_squad_age: 24.8
+    domestic_player_priority: 0.65
+    development_priority: 0.75
+    immediate_impact_priority: 0.40
+    pressing_weight: 0.80
+    possession_weight: 0.40
+    transition_weight: 0.70
+    progression_weight: 0.45
+    defensive_weight: 0.55
+    financial_value_weight: 0.70
+
+  - club_id: portland
+    club_name: "Portland Timbers"
+    conference: "West"
+    tactical_archetype: "balanced_attack"
+    recruitment_strategy: "experienced_core"
+    budget_tier: "medium"
+    average_squad_age: 28.5
+    domestic_player_priority: 0.45
+    development_priority: 0.30
+    immediate_impact_priority: 0.65
+    pressing_weight: 0.40
+    possession_weight: 0.55
+    transition_weight: 0.45
+    progression_weight: 0.50
+    defensive_weight: 0.45
+    financial_value_weight: 0.50
+
+  - club_id: rsl
+    club_name: "Real Salt Lake"
+    conference: "West"
+    tactical_archetype: "development_press"
+    recruitment_strategy: "academy_pipeline"
+    budget_tier: "medium"
+    average_squad_age: 25.2
+    domestic_player_priority: 0.65
+    development_priority: 0.70
+    immediate_impact_priority: 0.40
+    pressing_weight: 0.60
+    possession_weight: 0.45
+    transition_weight: 0.55
+    progression_weight: 0.50
+    defensive_weight: 0.50
+    financial_value_weight: 0.65
+
+  - club_id: sanjose
+    club_name: "San Jose Earthquakes"
+    conference: "West"
+    tactical_archetype: "transition"
+    recruitment_strategy: "budget_rebuild"
+    budget_tier: "low_medium"
+    average_squad_age: 26.0
+    domestic_player_priority: 0.55
+    development_priority: 0.55
+    immediate_impact_priority: 0.45
+    pressing_weight: 0.55
+    possession_weight: 0.40
+    transition_weight: 0.60
+    progression_weight: 0.45
+    defensive_weight: 0.50
+    financial_value_weight: 0.75
+
+  - club_id: seattle
+    club_name: "Seattle Sounders FC"
+    conference: "West"
+    tactical_archetype: "possession_control"
+    recruitment_strategy: "sustainable_compete"
+    budget_tier: "high"
+    average_squad_age: 27.5
+    domestic_player_priority: 0.50
+    development_priority: 0.45
+    immediate_impact_priority: 0.60
+    pressing_weight: 0.45
+    possession_weight: 0.70
+    transition_weight: 0.40
+    progression_weight: 0.65
+    defensive_weight: 0.50
+    financial_value_weight: 0.45
+
+  - club_id: stlouis
+    club_name: "St. Louis CITY SC"
+    conference: "West"
+    tactical_archetype: "high_press_transition"
+    recruitment_strategy: "identity_pressing"
+    budget_tier: "medium"
+    average_squad_age: 26.0
+    domestic_player_priority: 0.55
+    development_priority: 0.55
+    immediate_impact_priority: 0.50
+    pressing_weight: 0.85
+    possession_weight: 0.35
+    transition_weight: 0.80
+    progression_weight: 0.40
+    defensive_weight: 0.60
+    financial_value_weight: 0.60
+
+  - club_id: toronto
+    club_name: "Toronto FC"
+    conference: "East"
+    tactical_archetype: "rebuild_balanced"
+    recruitment_strategy: "roster_reset_value"
+    budget_tier: "medium_high"
+    average_squad_age: 26.5
+    domestic_player_priority: 0.50
+    development_priority: 0.50
+    immediate_impact_priority: 0.50
+    pressing_weight: 0.45
+    possession_weight: 0.55
+    transition_weight: 0.45
+    progression_weight: 0.55
+    defensive_weight: 0.45
+    financial_value_weight: 0.55
+
+  - club_id: vancouver
+    club_name: "Vancouver Whitecaps FC"
+    conference: "West"
+    tactical_archetype: "transition_press"
+    recruitment_strategy: "value_and_pathways"
+    budget_tier: "medium"
+    average_squad_age: 25.8
+    domestic_player_priority: 0.55
+    development_priority: 0.60
+    immediate_impact_priority: 0.45
+    pressing_weight: 0.60
+    possession_weight: 0.45
+    transition_weight: 0.65
+    progression_weight: 0.50
+    defensive_weight: 0.55
+    financial_value_weight: 0.65
+
+  - club_id: charlotte
+    club_name: "Charlotte FC"
+    conference: "East"
+    tactical_archetype: "balanced"
+    recruitment_strategy: "growth_market_spend"
+    budget_tier: "medium_high"
+    average_squad_age: 26.8
+    domestic_player_priority: 0.45
+    development_priority: 0.45
+    immediate_impact_priority: 0.55
+    pressing_weight: 0.50
+    possession_weight: 0.50
+    transition_weight: 0.50
+    progression_weight: 0.50
+    defensive_weight: 0.50
+    financial_value_weight: 0.50
+
+  - club_id: sd
+    club_name: "San Diego FC"
+    conference: "West"
+    tactical_archetype: "possession_build"
+    recruitment_strategy: "expansion_compete"
+    budget_tier: "high"
+    average_squad_age: 27.0
+    domestic_player_priority: 0.40
+    development_priority: 0.40
+    immediate_impact_priority: 0.65
+    pressing_weight: 0.45
+    possession_weight: 0.65
+    transition_weight: 0.40
+    progression_weight: 0.60
+    defensive_weight: 0.45
+    financial_value_weight: 0.40
+
+# Example seasonal needs (illustrative; override in dashboard / DB)
+example_needs:
+  - club_id: rbnY
+    season_year: 2025
+    position: "FW"
+    tactical_role: "pressing_striker"
+    need_priority: 1
+    age_preference: "18-25"
+    maximum_cost_tier: 2
+    starter_or_depth: "starter"
+    notes: "Illustrative need for high-press CF profile."
+  - club_id: miami
+    season_year: 2025
+    position: "CM"
+    tactical_role: "ball_winning_midfielder"
+    need_priority: 2
+    age_preference: "24-30"
+    maximum_cost_tier: 3
+    starter_or_depth: "rotation"
+    notes: "Illustrative complement to possession controllers."
+  - club_id: colorado
+    season_year: 2025
+    position: "W"
+    tactical_role: "transition_winger"
+    need_priority: 1
+    age_preference: "20-27"
+    maximum_cost_tier: 2
+    starter_or_depth: "starter"
+    notes: "Budget-conscious transition width."

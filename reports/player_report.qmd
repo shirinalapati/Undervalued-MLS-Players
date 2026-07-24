@@ -1,0 +1,44 @@
+---
+title: "Player Scouting Report"
+format:
+  html:
+    toc: true
+    theme: flatly
+params:
+  params_rds: "data/processed/report_params_player.rds"
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(dplyr)
+library(ggplot2)
+dat <- readRDS(params$params_rds)
+p <- dat$player
+```
+
+# `r p$display_name`
+
+Internal scouting document — decision support only. See `reports/player_report.Rmd` for the fully rendered MVP template used by `scripts/07_generate_reports.R`.
+
+| Field | Detail |
+|------|--------|
+| Competition | `r toupper(p$league_id)` |
+| Age | `r p$age` |
+| Role | `r p$role_id` |
+| Overall | `r round(p$score_overall, 1)` |
+| Risk | `r round(p$score_risk, 1)` |
+| Confidence | `r p$confidence` |
+
+## Strengths
+
+`r p$strengths`
+
+## Risks
+
+`r p$risks_text`
+
+## Video questions
+
+`r p$video_questions`

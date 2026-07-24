@@ -1,0 +1,58 @@
+---
+title: "Recruitment Shortlist Memo"
+output:
+  html_document:
+    theme: flatly
+params:
+  params_rds: "PLACEHOLDER"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(dplyr)
+dat <- readRDS(params$params_rds)
+sl <- dat$shortlist
+```
+
+# Shortlist memo (10–15 targets)
+
+**Classification:** Internal sporting strategy — public-data decision support  
+**Run note:** Club-conditioned rankings from MLS Recruitment Intelligence MVP
+
+This memo prioritizes **attainable and undervalued** profiles within a defined tactical role — not a global talent ranking.
+
+```{r table}
+sl |>
+  dplyr::group_by(club_id) |>
+  dplyr::slice_head(n = 15) |>
+  dplyr::ungroup() |>
+  dplyr::transmute(
+    Club = club_id,
+    Rank = rank,
+    Player = display_name,
+    League = toupper(league_id),
+    Age = age,
+    Role = role_id,
+    Overall = round(score_overall, 1),
+    RoleFit = round(score_role_fit, 1),
+    Feasibility = round(score_feasibility, 1),
+    Value = round(score_financial_value, 1),
+    Upside = round(score_development, 1),
+    Risk = round(score_risk, 1),
+    Rec = recommendation
+  ) |>
+  knitr::kable()
+```
+
+## Process notes
+
+1. Players cleared a minimum-minutes threshold and role filter.  
+2. League translation used transparent tier priors (see `config/league_tiers.yml`).  
+3. Cost used salary/cost tiers; transfer fees remain uncertain.  
+4. Final signing decisions require video, medical, and roster-rule validation.
+
+## Suggested next actions
+
+- Film 3–5 **Pursue** targets this week.  
+- Soft-monitor **Development target** names for minutes/form.  
+- Drop **Pass** names unless price/availability changes materially.

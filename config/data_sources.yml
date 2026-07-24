@@ -1,0 +1,60 @@
+# Data source registry — cutoffs populated/overridden at pipeline runtime.
+
+data_version: "2026.07.23-asa-live"
+product_season: 2026
+
+sources:
+  asa_performance:
+    name: "American Soccer Analysis (itscalledsoccer)"
+    domains: ["performance"]
+    leagues: ["mls", "mlsnp", "uslc"]
+    seasons: [2024, 2025, 2026]
+    notes: >
+      2026 is season-to-date. Goals Added nested fields use goals_added_raw;
+      Interrupting maps to defending family.
+    cutoff_field: performance_through
+
+  mlspa_compensation:
+    name: "MLSPA public salary guide via ASA"
+    domains: ["compensation"]
+    unit: "USD guaranteed compensation"
+    not_included: ["salary_budget_charge", "transfer_fees", "performance_bonuses"]
+    cutoff_field: mlspa_compensation_as_of
+    default_as_of: "2026-04-16"
+
+  mls_roster_profiles:
+    name: "Official MLS roster profiles"
+    domains: ["roster", "designations", "intl_status"]
+    status: "not_systematically_ingested"
+    cutoff_field: official_roster_profile_as_of
+    interim_backbone: "MLSPA/ASA salary guide + 2026 minutes (disclosed limitation)"
+
+  mls_transactions:
+    name: "MLS transaction updates"
+    domains: ["transactions"]
+    status: "not_systematically_ingested"
+    cutoff_field: transactions_through
+
+  club_profiles_yaml:
+    name: "Public-data club analytical priors"
+    path: "config/club_profiles.yml"
+    domains: ["club_context"]
+    notes: "User-overridable; not internal club strategy"
+
+  league_tiers_yaml:
+    name: "Assumed league-strength adjustments"
+    path: "config/league_tiers.yml"
+    domains: ["translation"]
+    notes: "Priors until mover model is fitted"
+
+cutoff_display_order:
+  - performance_through
+  - mlspa_compensation_as_of
+  - official_roster_profile_as_of
+  - transactions_through
+  - model_training_through
+
+synthetic_policy:
+  allow_in_demo_mode: true
+  allow_silent_fallback_in_live: false
+  production_must_set_is_synthetic_false: true

@@ -1,0 +1,98 @@
+{
+  "model_version": "0.3.0",
+  "hybrid_principle": "Learn what is likely to happen. Configure what a club should value. Use transparent rules when labels are scarce. Validate all three.\n",
+  "generated_at": "2026-07-23 18:34:31.83215",
+  "learned_component_status": [
+    {
+      "name": "contribution",
+      "status": "fallback_heuristic",
+      "fitted": false,
+      "artifact": "contribution_ridge.rds",
+      "label": "contribution"
+    },
+    {
+      "name": "league_translation",
+      "status": "assumed_tier_priors",
+      "fitted": false,
+      "artifact": "league_translation.rds",
+      "label": "Assumed league-strength adjustments"
+    },
+    {
+      "name": "age_curves",
+      "status": "fallback_priors",
+      "fitted": false,
+      "artifact": "age_curves.rds",
+      "label": "age_curves"
+    },
+    {
+      "name": "shrinkage",
+      "status": "fallback_fixed_m0",
+      "fitted": false,
+      "artifact": "shrinkage_m0.json",
+      "label": "shrinkage"
+    },
+    {
+      "name": "cost_tier",
+      "status": "unknown_when_unobserved",
+      "fitted": false,
+      "artifact": "cost_tier.rds",
+      "label": "Estimated cost tier (not transfer fee)"
+    },
+    {
+      "name": "acquisition_probability",
+      "status": "fallback_heuristic",
+      "fitted": false,
+      "artifact": "acquisition_prob.rds",
+      "label": "acquisition_probability"
+    }
+  ],
+  "time_split": {
+    "train_through_season": 2023,
+    "validate_season": 2024,
+    "test_season": 2025,
+    "live_cutoff_rule": "train_only_on_data_available_before_prediction_cutoff"
+  },
+  "required_evaluations": {
+    "near_term_contribution": {
+      "description": "Cutoff-date features → next-season / next-12m MLS contribution",
+      "metrics": ["MAE", "RMSE", "rank_correlation", "calibration_by_position"],
+      "baselines": ["raw_gplus_p90", "xg_xa_p90", "heuristic_role_blend"],
+      "status": "pending_or_see_hybrid_training_report"
+    },
+    "league_translation": {
+      "description": "USLC/MLSNP→MLS movers; pre/post with CIs",
+      "status": "pending_until_mover_sample"
+    },
+    "shortlist_success": {
+      "description": "Historical snapshot top-k vs later useful MLS contributors",
+      "baselines": ["gplus_p90", "xg_xa_p90", "age", "salary", "minutes"],
+      "status": "pending"
+    },
+    "stability": {
+      "description": "Bootstrap minutes; top-10 retention; recommendation flip rate",
+      "status": "pending"
+    },
+    "decision_layer_sensitivity": {
+      "description": "Configurable weights change rank, not Model-1 contribution scores",
+      "status": "required"
+    }
+  },
+  "coefficient_taxonomy": {
+    "learned": ["contribution", "league_translation", "age_curves", "shrinkage", "cost_tier", "acquisition_probability"],
+    "configurable": {
+      "club_preferences": ["development_vs_immediate", "budget_tolerance", "pressing_vs_possession", "domestic_player_preference", "risk_tolerance", "target_age_range", "starter_vs_depth"],
+      "decision_layer": {
+        "note": "Policy choice — not an objectively learnable universal blend",
+        "source": "config/club_profiles.yml + dashboard overrides + model_spec.recruitment_priority"
+      }
+    },
+    "rules": ["recommendation_invariants", "role_metric_sets_expert_defined", "coverage_gates", "feasibility_gate", "missing_metrics_are_na"]
+  },
+  "language_policy": {
+    "allowed": ["Priority Review", "Development Watch", "Monitor", "Low Priority"],
+    "contribution_label": "Estimated Near-Term Contribution Index",
+    "value_label": "Compensation-Adjusted Value Index",
+    "forbidden_until_validated": ["Projected MLS performance", "Pursue", "Financial surplus", "Highly attainable"]
+  },
+  "note": "Learn outcomes; configure club utility; enforce recommendation rules. See docs/architecture.md and docs/ACCURACY_AUDIT.md."
+}

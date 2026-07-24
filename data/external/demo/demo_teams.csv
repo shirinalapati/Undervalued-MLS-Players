@@ -1,0 +1,25 @@
+team_id,team_name,league_id,is_mls_club
+mls_team_01,Harbor FC,mls,1
+mls_team_02,Summit SC,mls,1
+mls_team_03,River United,mls,1
+mls_team_04,Metro Athletic,mls,1
+mls_team_05,Canyon FC,mls,1
+mls_team_06,Prairie SC,mls,1
+mls_team_07,Bay United,mls,1
+mls_team_08,Capital Athletic,mls,1
+mlsnp_team_01,Harbor FC,mlsnp,0
+mlsnp_team_02,Summit SC,mlsnp,0
+mlsnp_team_03,River United,mlsnp,0
+mlsnp_team_04,Metro Athletic,mlsnp,0
+mlsnp_team_05,Canyon FC,mlsnp,0
+mlsnp_team_06,Prairie SC,mlsnp,0
+mlsnp_team_07,Bay United,mlsnp,0
+mlsnp_team_08,Capital Athletic,mlsnp,0
+uslc_team_01,Harbor FC,uslc,0
+uslc_team_02,Summit SC,uslc,0
+uslc_team_03,River United,uslc,0
+uslc_team_04,Metro Athletic,uslc,0
+uslc_team_05,Canyon FC,uslc,0
+uslc_team_06,Prairie SC,uslc,0
+uslc_team_07,Bay United,uslc,0
+uslc_team_08,Capital Athletic,uslc,0

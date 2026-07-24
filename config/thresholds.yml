@@ -1,0 +1,41 @@
+# Thresholds — coverage, feasibility gates, confidence caps.
+# Sourced by scoring, UI, and exports via load_project / model loader.
+
+model_version_ref: "0.3.0"
+
+coverage:
+  role_fit_unavailable_below: 0.50
+  max_confidence_low_below: 0.70
+  max_confidence_medium_below: 0.85
+
+feasibility_gate:
+  low_threshold: 35.0
+
+recommendation_score_thresholds:
+  priority_review:
+    min_overall: 70
+    max_model_uncertainty: 45
+    min_feasibility: 55
+  development_watch:
+    min_development: 70
+    min_overall: 55
+    min_feasibility: 50
+  monitor:
+    min_overall: 55
+    max_model_uncertainty: 65
+  low_priority:
+    max_feasibility_for_auto_low: 30
+
+minutes:
+  full_season_floor: 450
+  ytd_floor: 180
+  reliability_high: 2000
+  reliability_medium: 900
+
+forecast:
+  primary_horizon: "next_complete_mls_season"
+  primary_horizon_label: "Next complete MLS season"
+  secondary_horizons:
+    - "next_12_months"
+    - "remaining_2026_season"
+  contribution_output_name: "Estimated Near-Term Contribution"

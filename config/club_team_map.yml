@@ -1,0 +1,39 @@
+# Maps portfolio club_id (config/club_profiles.yml) → ASA team_id(s).
+# Used to infer current MLS rosters from public player-season data.
+# Public-data estimate; verify against official club rosters when needed.
+
+meta:
+  season: 2026
+  note: "ASA team identifiers for 2026 MLS clubs"
+
+clubs:
+  atl: { club_name: "Atlanta United", asa_team_ids: ["KAqBN0Vqbg"] }
+  austin: { club_name: "Austin FC", asa_team_ids: ["gpMOLwl5zy"] }
+  chicago: { club_name: "Chicago Fire FC", asa_team_ids: ["X0Oq66zq6D"] }
+  cincinnati: { club_name: "FC Cincinnati", asa_team_ids: ["NWMWlBK5lz"] }
+  colorado: { club_name: "Colorado Rapids", asa_team_ids: ["pzeQZ6xQKw"] }
+  columbus: { club_name: "Columbus Crew", asa_team_ids: ["mvzqoLZQap"] }
+  dallas: { club_name: "FC Dallas", asa_team_ids: ["mKAqBBmqbg"] }
+  dc: { club_name: "D.C. United", asa_team_ids: ["EKXMeX3Q64"] }
+  houston: { club_name: "Houston Dynamo FC", asa_team_ids: ["YgOMngl5wN"] }
+  sportingkc: { club_name: "Sporting Kansas City", asa_team_ids: ["Z2vQ1xlqrA"] }
+  laf: { club_name: "LAFC", asa_team_ids: ["eVq3ya6MWO"] }
+  lag: { club_name: "LA Galaxy", asa_team_ids: ["kaDQ0wRqEv"] }
+  miami: { club_name: "Inter Miami CF", asa_team_ids: ["zeQZkL1MKw"] }
+  minnesota: { club_name: "Minnesota United FC", asa_team_ids: ["kRQand1MKZ"] }
+  montreal: { club_name: "CF Montréal", asa_team_ids: ["APk5LGOMOW"] }
+  nashville: { club_name: "Nashville SC", asa_team_ids: ["vzqoOgNqap"] }
+  ne: { club_name: "New England Revolution", asa_team_ids: ["19vQ2095K6"] }
+  nycfc: { club_name: "New York City FC", asa_team_ids: ["Vj58weDM8n"] }
+  rbnY: { club_name: "New York Red Bulls", asa_team_ids: ["a2lqRX2Mr0"] }
+  orlando: { club_name: "Orlando City SC", asa_team_ids: ["jYQJ8EW5GR"] }
+  philadelphia: { club_name: "Philadelphia Union", asa_team_ids: ["9z5k7Yg5A3"] }
+  portland: { club_name: "Portland Timbers", asa_team_ids: ["WBLMvYAQxe"] }
+  rsl: { club_name: "Real Salt Lake", asa_team_ids: ["a2lqR4JMr0"] }
+  sanjose: { club_name: "San Jose Earthquakes", asa_team_ids: ["0KPqjA456v"] }
+  seattle: { club_name: "Seattle Sounders FC", asa_team_ids: ["jYQJ19EqGR"] }
+  stlouis: { club_name: "St. Louis CITY SC", asa_team_ids: ["wvq9B9wQWn"] }
+  toronto: { club_name: "Toronto FC", asa_team_ids: ["kRQabn8MKZ"] }
+  vancouver: { club_name: "Vancouver Whitecaps FC", asa_team_ids: ["lgpMOvnQzy"] }
+  charlotte: { club_name: "Charlotte FC", asa_team_ids: ["NPqxKXZ59d"] }
+  sd: { club_name: "San Diego FC", asa_team_ids: ["zeQZBOzQKw"] }
