@@ -1,0 +1,40 @@
+{
+  "validation_type": "year_to_year_stability",
+  "claim": "Descriptive stability check — not a guarantee of future breakouts",
+  "n_players": 358,
+  "spearman_sporting_impact_2025_vs_2026": 0.4166,
+  "spearman_value_surplus_2025_vs_2026": 0.5302,
+  "top25_share_with_2026_impact_ge_50": 0.656,
+  "baselines": {
+    "prior_sporting_impact": 0.4024,
+    "prior_compensation_standing_proxy": 0.0799
+  },
+  "by_position": [
+    {
+      "position_group": "CB",
+      "n": 80,
+      "spearman_impact": 0.2527
+    },
+    {
+      "position_group": "CM",
+      "n": 83,
+      "spearman_impact": 0.5503
+    },
+    {
+      "position_group": "FB",
+      "n": 68,
+      "spearman_impact": 0.2519
+    },
+    {
+      "position_group": "FW",
+      "n": 49,
+      "spearman_impact": 0.4914
+    },
+    {
+      "position_group": "W",
+      "n": 78,
+      "spearman_impact": 0.466
+    }
+  ],
+  "generated_at": "2026-07-24 18:10:30 UTC"
+}

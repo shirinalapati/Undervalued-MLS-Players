@@ -1,30 +1,32 @@
-# docs/validation.md
+# Validation — 2026 MLS Value Index
 
-**Status:** Unvalidated — historical metrics not yet published.  
-**Plan:** [`VALIDATION_PLAN.md`](VALIDATION_PLAN.md)  
-**Scaffold:** `docs/validation/backtest_summary.json` · `scripts/run_backtests.R` · `scripts/08_train_learned_models.R`
+## Claim boundary
 
-Until this page contains test-season MAE/RMSE/rank correlation vs baselines, the live app must show status **unvalidated_heuristic** and use cautious recommendation labels only.
+The product identifies **current** players whose public performance exceeds compensation standing. It does **not** claim guaranteed future breakouts unless stronger outcome validation is published.
 
-## Forecast horizon (locked)
+## Stability check (2025 → 2026 YTD)
 
-**Next complete MLS season** (`config/thresholds.yml` / `config/model.yml`).
+Script: `scripts/09_run_validation.R`  
+Artifacts:
 
-Sporting contribution excludes salary, cost, budget, and feasibility.
+- `docs/validation/value_index_stability.json`
+- `reports/_output/model_validation.html`
 
-## Results
+Measures:
 
-| Evaluation | Status |
-| --- | --- |
-| Contribution backtest | Pending |
-| League-mover translation | Pending / assumed priors |
-| Shortlist hit-rate | Pending |
-| Stability | Pending |
-| Recommendation invariants (unit) | Passing (`tests/test_recommendation_invariants.R`) |
+- Spearman correlation of Sporting Impact (2025 full vs 2026 YTD)
+- Spearman correlation of Value Surplus
+- Share of 2025 position top-25 with 2026 Impact ≥ 50
+- Simple baselines (prior impact; compensation-standing proxy)
 
-## How to regenerate
+## Baselines (conceptual)
 
-```bash
-Rscript scripts/08_train_learned_models.R
-Rscript scripts/run_backtests.R
-```
+1. Goals Added / Sporting Impact alone  
+2. Compensation percentile alone  
+3. Previous-season minutes  
+4. Raw performance − compensation percentile  
+5. Position median  
+
+## Interpretation
+
+Use stability results to understand persistence of public-data signals. Do not market the Index as a salary-growth or minutes-guarantee model without dedicated outcome studies.

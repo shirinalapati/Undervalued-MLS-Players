@@ -1,18 +1,17 @@
 default:
   project:
-    name: "MLS Recruitment Intelligence"
+    name: "2026 MLS Value Index"
     mode: "live"                    # demo | live
     product_season: 2026
     evaluation_period_default: "blended"  # ytd_2026 | full_2025 | blended
     random_seed: 42
-    min_minutes_ytd: 180            # lower floor for in-season YTD
-    min_minutes_full: 450           # full-season / blended floor
-    shortlist_size: 100            # top-N ranked candidates shown in Shortlist tab
+    min_minutes_ytd: 180
+    min_minutes_full: 450
+    min_minutes_official: 450
     blend:
-      prior_strength_minutes: 700   # m0 in EB blend of 2026 YTD vs 2025
+      prior_strength_minutes: 700
       min_ytd_share: 0.15
       max_ytd_share: 0.90
-      development_uses_2024: true
 
   paths:
     raw: "data/raw"
@@ -20,7 +19,7 @@ default:
     processed: "data/processed"
     external: "data/external"
     demo: "data/external/demo"
-    database: "database/mls_recruitment.sqlite"
+    database: "database/mls_value_index.sqlite"
     exports: "exports"
     cache: "data/raw/cache"
     provenance: "data/processed/data_provenance.json"
@@ -30,60 +29,24 @@ default:
 
   acquisition:
     asa:
-      leagues: ["mls", "mlsnp", "uslc"]
-      # 2026 = current YTD; 2025 = completed baseline; 2024 = development trends only
+      leagues: ["mls"]
       seasons: [2024, 2025, 2026]
       salary_season: 2026
       pause_seconds: 1.2
-      cache_hours: 12            # re-fetch when cache older than this (daily job uses --force-refresh)
+      cache_hours: 12
     include_elite_leagues: false
-    elite_availability_filters_enabled: false
 
-  # Deployed app: poll processed data and hot-reload without restarting Shiny
   deployment:
     auto_reload: true
-    refresh_check_seconds: 60    # how often the running app checks for newer cutoff/files
+    refresh_check_seconds: 60
+    # Shown in the app banner after performance cutoff, e.g. "(updates every day)"
+    refresh_cadence_label: "every day"
     daily_refresh_script: "scripts/refresh_daily.R"
-
-  scoring:
-    weights:
-      projected_mls_performance: 0.30
-      tactical_role_fit: 0.25
-      financial_value: 0.20
-      acquisition_feasibility: 0.15
-      development_upside: 0.10
-    risk_penalty_weight: 0.15
-    apply_risk_penalty: true
-
-  # Club × position × tactical-role need score (public-data planning signals)
-  roster_needs:
-    weights:
-      starter_quality_gap: 0.30
-      effective_depth_gap: 0.25
-      succession_risk: 0.15
-      availability_risk: 0.10
-      tactical_coverage_gap: 0.10
-      financial_efficiency_opportunity: 0.10
-    note: >
-      Financial efficiency is an opportunity label unless quality, depth, succession,
-      availability, or tactical gaps are also elevated. Never treat a named incumbent
-      as a mandated replacement from age/salary/score alone.
-
-  weight_rationale: |
-    Projected MLS performance (30%): Core question is contribution after joining MLS.
-    Tactical role fit (25%): Prevents generic 'best player' rankings; roles drive usage.
-    Financial value (20%): Surplus relative to cost is central to 'undervalued'.
-    Acquisition feasibility (15%): Attainability filter.
-    Development upside (10%): Uses 2024→2025→2026 trajectory when available.
+    # Scheduled refresh rebuilds ASA/MLSPA data + Value Index scores in place.
+    # App hot-reloads processed files when mtimes change (local/server with persistent disk).
+    # On shinyapps.io, use GitHub Actions daily refresh + redeploy (see docs/deployment.md).
 
   labels:
-    ytd_2026: "2026 YTD (season-to-date — not full-season)"
-    full_2025: "2025 full season (completed)"
-    blended: "Blended recent performance (2026 YTD + 2025 prior)"
-
-  mvp_roles:
-    - pressing_striker
-    - transition_winger
-    - ball_winning_midfielder
-    - progressive_center_back
-    - overlapping_fullback
+    ytd_2026: "2026 season-to-date"
+    full_2025: "2025 full season"
+    blended: "2025+2026 season to date"

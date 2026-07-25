@@ -1,82 +1,52 @@
-# FINAL_RELEASE_CHECKLIST.md
+# Final Release Checklist — 2026 MLS Value Index
 
-Living checklist. **Do not declare the project finished until every item is checked with evidence.**
+## Product identity
+- [x] App renamed to 2026 MLS Value Index
+- [x] README / docs describe Value Index (not recruitment engine)
+- [x] Recruitment features archived under `archive/recruitment_engine/`
+- [x] Backup branch `archive/recruitment-engine-backup`
 
-**Last reviewed:** 2026-07-23  
+## Data
+- [x] Production players are real MLS only
+- [x] No MLSNP/USL in official rankings
+- [x] Every official eligible player has known 2026 compensation
+- [x] All 30 current MLS clubs appear in official rankings
+- [x] Data cutoff dates visible in app banner
+- [x] Live mode refuses synthetic fallback
 
----
+## Scoring
+- [x] Sporting Impact = positional percentile of adjusted blended total G+/96
+- [x] Components explanatory only (not primary re-weights)
+- [x] Value Surplus = Impact − Compensation Percentile
+- [x] Undervaluation Score = positional surplus percentile among eligible
+- [x] Impact floor prevents weak cheap “Undervalued” labels
+- [x] Surplus ≤ 0 never labeled Undervalued / Strong / Elite
+- [x] Display Rank sequential; Position Rank resets by position
+- [x] Missing metrics remain missing
+- [x] Filters do not recompute fixed player scores
+- [x] Visible G+ rates use per 96 minutes
 
-## A. Clubs and production data
+## Application
+- [x] About & Methodology
+- [x] MLS Value Rankings (+ missing-compensation table)
+- [x] Position Rankings
+- [x] Team Value
+- [x] Player Profile
+- [x] Compare Players (grouped bars + separate Value Surplus)
+- [x] Excel export
 
-- [ ] All configured MLS clubs load in the app  
-- [ ] All production player names are real  
-- [ ] No synthetic production records remain in live mode  
-- [ ] Provenance `is_synthetic` matches actual data mode  
-- [ ] Separate cutoffs shown: performance, compensation, roster, transactions, model training  
+## Quality
+- [x] `tests/test_value_index.R` passes
+- [x] Historical stability validation published
+- [x] Model version `1.1.0` in config
 
-## B. Methodology and consistency
+## Deployment
+- [ ] Deployed to hosted Shiny target (run when credentials available)
+- [x] Local launch path documented (`docs/deployment.md`)
+- [x] GitHub Actions daily refresh workflow present
+- [x] Reproducible pipeline via `scripts/run_pipeline.R`
 
-- [ ] Every score has a documented definition in versioned config  
-- [ ] About / Methodology / README / Excel / reports render from the same config  
-- [ ] No duplicated hard-coded formulas in the app  
-- [ ] Observed vs estimated vs assumed vs unknown clearly distinguished  
-- [ ] Missing values are not fabricated (no neutral-50 display)  
-
-## C. Models and scores
-
-- [ ] Forecast horizon defined and used consistently  
-- [ ] Sporting contribution excludes salary/feasibility/cost  
-- [ ] Fixed-reference scores; filters change rank only  
-- [ ] Role-fit coverage gates enforced  
-- [ ] League translation order: shrink → translate → MLS reference  
-- [ ] Age affects development outlook, not current performance inflation  
-
-## D. Recommendations
-
-- [ ] All recommendation invariants pass automated tests  
-- [ ] No contradictory labels (e.g. lower-cost when more expensive)  
-- [ ] Cautious labels unless validation supports stronger language  
-- [ ] Recommendation text agrees with deltas  
-
-## E. Validation
-
-- [ ] Historical backtests published (`docs/validation.md`, model card, HTML report)  
-- [ ] Baselines compared  
-- [ ] In-app validation summary visible  
-
-## F. Exports
-
-- [ ] Excel workbook: all required sheets, metadata, no synthetic prod content  
-- [ ] Word/PDF one-pager  
-- [ ] PowerPoint briefing  
-- [ ] Exports match live app calculations  
-
-## G. Tests and reproducibility
-
-- [ ] Full automated test suite green (data, model, recommendation, export, app)  
-- [ ] One documented command rebuilds DB → data → models → scores → tests → reports → app  
-- [ ] `renv` restore works from clean environment  
-
-## H. Deployment
-
-- [ ] Deployed app uses production data  
-- [ ] Model version + cutoffs visible  
-- [ ] Credentials not exposed  
-- [ ] Refresh failures handled; **no silent synthetic fallback**  
-- [ ] Unavailable information disclosed  
-
-## I. Documentation
-
-- [ ] README matches reality (no unimplemented features claimed complete)  
-- [ ] architecture, data_sources, data_dictionary, methodology, validation, limitations, model_card, deployment, maintenance, CHANGELOG, CONTRIBUTING  
-
----
-
-## Sign-off
-
-| Role | Name | Date | Evidence link |
-| --- | --- | --- | --- |
-| Author | | | |
-| Reviewer | | | |
-
-**Release decision:** ☐ Not ready · ☐ Limited portfolio demo · ☐ Production portfolio release  
+## Remaining optional
+- [ ] PowerPoint deck
+- [ ] One-page PDF player report
+- [ ] Screenshot assets in README

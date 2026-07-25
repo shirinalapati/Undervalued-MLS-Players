@@ -212,7 +212,7 @@ build_evaluation_table <- function(players_multi, cfg, period = "blended") {
         ),
         blend_weight_2025 = 1 - blend_weight_2026,
         evaluation_period = "blended",
-        season_label = "Blended recent performance (2026 YTD + 2025 prior)",
+        season_label = "2025+2026 season to date",
         minutes = pmax(minutes_2026, minutes_2025 * blend_weight_2025),
         minutes_share = pmin(pmax((minutes_2026 + 0.35 * minutes_2025) / 3060, 0.02), 1),
         data_reliability = dplyr::case_when(

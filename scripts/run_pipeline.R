@@ -1,15 +1,15 @@
 #!/usr/bin/env Rscript
-# Run the full MVP pipeline in order.
+# Run the 2026 MLS Value Index pipeline.
 # Usage:
 #   Rscript scripts/run_pipeline.R
 #   Rscript scripts/run_pipeline.R --skip-reports
 #   Rscript scripts/run_pipeline.R --force-refresh --skip-reports
-#   Rscript scripts/refresh_daily.R
 
 args <- commandArgs(trailingOnly = TRUE)
 force_demo <- "--demo" %in% args
 skip_reports <- "--skip-reports" %in% args
 force_refresh <- "--force-refresh" %in% args
+skip_collect <- "--skip-collect" %in% args
 
 root <- normalizePath(getwd())
 if (basename(root) == "scripts") root <- dirname(root)
@@ -31,19 +31,24 @@ if (force_refresh) {
 }
 
 cfg <- load_config()
-write_log("Pipeline mode: ", cfg$project$mode, " | product season: ", cfg$project$product_season %||% 2026)
+write_log("Pipeline mode: ", cfg$project$mode, " | product: ", cfg$project$name)
 
 steps <- c(
   if (identical(cfg$project$mode, "demo")) "scripts/00_generate_demo_data.R" else NULL,
-  "scripts/01_collect_data.R",
-  "scripts/02_clean_data.R",
+  if (!skip_collect) "scripts/01_collect_data.R" else NULL,
+  if (!skip_collect) "scripts/02_clean_data.R" else NULL,
+  "scripts/06_generate_value_index.R",
   "scripts/03_load_database.R",
-  "scripts/04_build_features.R",
-  "scripts/05_train_models.R",
-  "scripts/06_generate_rankings.R"
+  "scripts/07_generate_reports.R",
+  "scripts/09_run_validation.R",
+  "scripts/10_run_tests.R"
 )
+if (skip_reports) {
+  steps <- setdiff(steps, c("scripts/07_generate_reports.R"))
+}
 steps <- Filter(Negate(is.null), steps)
-if (!skip_reports) steps <- c(steps, "scripts/07_generate_reports.R")
+# Drop steps that do not exist yet
+steps <- steps[file.exists(steps)]
 
 for (step in steps) {
   write_log("==== ", step, " ====")
@@ -65,4 +70,4 @@ if (force_demo) {
 }
 
 write_log("Pipeline complete.")
-write_log("Launch dashboard with: Rscript -e \"shiny::runApp('app', port = 7788)\"")
+write_log("Launch dashboard: Rscript -e \"shiny::runApp('app', port = 7788)\"")

@@ -1,0 +1,126 @@
+# 2026 MLS Value Index — production scoring configuration
+# Source of truth for formulas, eligibility, labels, and explanatory components.
+
+model:
+  name: "2026 MLS Value Index"
+  version: "1.1.0"
+  question: >
+    Which current MLS players provide the most compensation-efficient
+    position-adjusted on-ball impact?
+  validation_status: "descriptive_with_historical_stability_checks"
+  primary_sporting_measure: "reliability_adjusted_blended_total_gplus_p96"
+  note: >
+    Sporting Impact uses total Goals Added (position-adjusted on-ball impact
+    only). Component G+ rates are explanatory only and are not re-weighted
+    into the primary score. The model does not estimate adjusted team impact,
+    off-ball contribution, or plus-minus.
+
+
+position_groups:
+  FW:
+    label: "Strikers"
+    include_in_rankings: true
+  W:
+    label: "Wingers and attacking midfielders"
+    include_in_rankings: true
+  CM:
+    label: "Central and defensive midfielders"
+    include_in_rankings: true
+  FB:
+    label: "Fullbacks and wingbacks"
+    include_in_rankings: true
+  CB:
+    label: "Center backs"
+    include_in_rankings: true
+  GK:
+    label: "Goalkeepers"
+    include_in_rankings: false
+    exclusion_reason: >
+      Goalkeepers are excluded from the current version because the available
+      public metrics do not support a comparable valuation model.
+
+explanatory_components:
+  # Display / profile only — not used in Sporting Impact
+  - key: goals_added_shooting_p90
+    label: Shooting
+    asa_family: Shooting
+    higher_is_better: true
+  - key: goals_added_passing_p90
+    label: Passing
+    asa_family: Passing
+    higher_is_better: true
+  - key: goals_added_receiving_p90
+    label: Receiving
+    asa_family: Receiving
+    higher_is_better: true
+  - key: goals_added_dribbling_p90
+    label: Dribbling
+    asa_family: Dribbling
+    higher_is_better: true
+  - key: goals_added_defending_p90
+    label: Interrupting
+    asa_family: Interrupting
+    higher_is_better: true
+    note: "ASA Interrupting mapped to goals_added_defending in pipeline"
+  - key: goals_added_fouling_p90
+    label: Fouling
+    asa_family: Fouling
+    higher_is_better: true
+
+shrinkage:
+  prior_strength_minutes: 600
+  rate_unit: "per_90"
+  convert_to_per_96: true
+  p96_factor: 1.0666666667  # 96/90
+
+blend:
+  prior_strength_minutes: 700
+  min_ytd_share: 0.15
+  max_ytd_share: 0.90
+
+eligibility:
+  league_id: "mls"
+  min_minutes_2026_official: 450
+  min_sporting_impact_for_undervalued_label: 55
+  require_known_compensation: true
+  require_position_group: true
+  forbid_synthetic: true
+  min_metric_coverage: 0.50  # total G+ present = coverage 1.0 when available
+
+coverage_bands:
+  unavailable_below: 0.50
+  low_below: 0.70
+  medium_below: 0.85
+  # >= 0.85 → high (if other confidence factors allow)
+
+labels:
+  # No player with Value Surplus <= 0 may receive Elite / Strong / Undervalued.
+  elite_value:
+    min_value_surplus: 25
+    min_undervaluation_score: 90
+    min_sporting_impact: 70
+    min_confidence: ["Medium", "High"]
+  strong_value:
+    min_value_surplus: 15
+    min_undervaluation_score: 75
+    min_sporting_impact: 60
+    min_confidence: ["Medium", "High"]
+  undervalued:
+    min_value_surplus: 5
+    min_undervaluation_score: 60
+    min_sporting_impact: 55
+  fair_value:
+    # surplus > -15 and surplus < 5, or fails an impact floor for a higher label
+    min_value_surplus_exclusive: -15
+    max_value_surplus_exclusive: 5
+  below_expected_by_model:
+    max_value_surplus: -15
+
+evaluation_periods:
+  - id: blended
+    label: "2025+2026 season to date"
+    default: true
+  - id: ytd_2026
+    label: "2026 season-to-date"
+  - id: full_2025
+    label: "2025 full season"

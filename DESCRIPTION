@@ -1,10 +1,9 @@
-# Dependency manifest for renv / install.packages
-Package: mlsrecruitmentintelligence
-Title: MLS Recruitment Intelligence
-Version: 0.1.0
+Package: mlsvalueindex
+Title: 2026 MLS Value Index
+Version: 1.0.0
 Authors@R: person("Portfolio", "Author", role = c("aut", "cre"), email = "you@example.com")
-Description: Identify attainable and undervalued MLS recruitment targets with
-  role-conditioned scoring, SQL storage, and a Shiny scouting dashboard.
+Description: Rank current MLS players by position-adjusted sporting impact
+  relative to 2026 guaranteed compensation using ASA Goals Added and MLSPA pay.
 License: MIT
 Depends: R (>= 4.3.0)
 Imports:
@@ -16,9 +15,11 @@ Imports:
     here,
     jsonlite,
     openxlsx,
+    plotly,
     purrr,
     readr,
     rmarkdown,
+    scales,
     shiny,
     tibble,
     tidyr,
@@ -26,8 +27,6 @@ Imports:
     markdown
 Suggests:
     itscalledsoccer,
-    testthat,
-    worldfootballR
+    testthat
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.0

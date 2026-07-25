@@ -1,0 +1,137 @@
+/* 2026 MLS Value Index */
+:root {
+  --vi-ink: #102a1f;
+  --vi-green: #1b4332;
+  --vi-accent: #2d6a4f;
+  --vi-mint: #d8f3dc;
+  --vi-sand: #f4f1ea;
+  --vi-line: #c9d5ce;
+  --vi-warn: #9a3412;
+}
+
+body {
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: var(--vi-ink);
+  background:
+    radial-gradient(1200px 500px at 10% -10%, #e9f5ee 0%, transparent 55%),
+    linear-gradient(180deg, #f7faf8 0%, #eef3f0 100%);
+}
+
+h1, h2, h3, .brand-title {
+  font-family: "Fraunces", Georgia, serif;
+  color: var(--vi-green);
+}
+
+.vi-banner {
+  background: linear-gradient(120deg, #1b4332, #2d6a4f 55%, #40916c);
+  color: #f8fff9;
+  padding: 1.1rem 1.4rem;
+  border-radius: 0 0 14px 14px;
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 30px rgba(16, 42, 31, 0.18);
+}
+
+.vi-banner h1 {
+  color: #fff;
+  margin: 0 0 0.25rem 0;
+  font-size: 1.75rem;
+}
+
+.vi-banner .subtitle {
+  opacity: 0.92;
+  margin: 0;
+}
+
+.vi-meta {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-top: 0.55rem;
+}
+
+.sidebar-panel {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--vi-line);
+  border-radius: 12px;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.help-text {
+  color: #4b6357;
+  font-size: 0.86rem;
+}
+
+.value-chip {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--vi-mint);
+  color: var(--vi-green);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.section-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--vi-line);
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  margin-bottom: 1rem;
+}
+
+.nav-tabs > li > a {
+  color: var(--vi-green);
+}
+
+.warning-box {
+  border-left: 4px solid var(--vi-warn);
+  background: #fff7ed;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+}
+
+.vi-hover-chip {
+  min-height: 2.4rem;
+  margin: 0.35rem 0 0.5rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--vi-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #4b6357;
+  font-size: 0.92rem;
+}
+
+.vi-hover-chip-active {
+  border-color: var(--vi-accent);
+  background: var(--vi-mint);
+  color: var(--vi-ink);
+}
+
+.compare-legend {
+  margin: 0.35rem 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--vi-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.compare-legend ul {
+  list-style: none;
+  margin: 0.45rem 0 0;
+  padding: 0;
+}
+
+.compare-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.28rem 0;
+  color: var(--vi-ink);
+  font-size: 0.95rem;
+}
+
+.compare-legend-swatch {
+  width: 1.1rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}

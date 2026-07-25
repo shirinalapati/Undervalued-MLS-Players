@@ -1,175 +1,111 @@
-# MLS Recruitment Intelligence
+# 2026 MLS Value Index
 
-**Heuristic recruitment shortlists for MLS clubs (unvalidated prototype)**
+## Identifying Undervalued Players in Major League Soccer
 
-> How can MLS clubs surface Priority Review / Monitor / Development Watch candidates from public data — without presenting unvalidated indices as precise projections, financial surplus, or confirmed acquisition feasibility?
+**Research question:** Which current MLS players provide the most compensation-efficient position-adjusted on-ball impact?
 
-**Source of truth for formulas/labels:** [`config/model_spec.yml`](config/model_spec.yml)  
-**Hybrid architecture (learn / configure / rules):** [`docs/architecture.md`](docs/architecture.md)  
-**Accuracy audit:** [`docs/ACCURACY_AUDIT.md`](docs/ACCURACY_AUDIT.md)  
-**Methodology:** [`docs/methodology.md`](docs/methodology.md)
+This portfolio project ranks **current MLS players only** using:
 
-It is **not** a “best players in the world” ranking. Scores are fixed-reference heuristics; filters change rank, not the underlying index.
+- 2026 season-to-date ASA performance
+- 2025 full-season performance as a stabilizing prior
+- 2026 MLSPA guaranteed compensation
 
-## What this demonstrates
+The production model measures **position-adjusted on-ball impact through Goals Added only**. It does not estimate adjusted team impact, off-ball contribution, plus-minus, transfer fees, GAM, Salary Budget Charge, or trade value.
 
-| Skill | Where it shows up |
-| --- | --- |
-| R analysis & modeling | `R/features`, `R/models`, `R/rankings` |
-| SQL / relational design | `database/schema.sql`, `R/database` |
-| Public API / reproducible acquisition | ASA `itscalledsoccer` client in `R/collect` |
-| Interactive scouting software | `app/` (Shiny) |
-| Staff-facing reports | `reports/*.qmd`, Excel shortlists in `exports/` |
-| Honest methodology | `docs/methodology.md`, `docs/ACCURACY_AUDIT.md` |
-
-## Research design (short)
-
-Players receive transparent **0–100 component scores** (see `model_spec.yml`):
-
-1. Estimated Near-Term Contribution Index (role-specific; unvalidated)  
-2. Tactical role fit (coverage-gated; missing = NA, never 50)  
-3. Acquisition feasibility (gate)  
-4. Development outlook (continuous age curves)  
-5. Compensation-Adjusted Value Index (known guaranteed compensation only)  
-6. Model uncertainty / sporting volatility / acquisition complexity (split)
-
-Default recruitment priority (from `model_spec`):
-
-- Sporting = 55% contribution + 30% role fit + 15% development  
-- Priority = 65% sporting + 15% style + 15% comp-adjusted value + 5% pathway  
-
-**Cautious Rec labels until backtests:** Priority Review · Development Watch · Monitor · Low Priority  
-
-**Risk** displayed as model uncertainty; optionally soft-penalizes overall. Weights are configuration, not truth.
-
-## Primary player pool (MVP)
-
-Realistic MLS recruitment markets first:
-
-- MLS  
-- MLS NEXT Pro  
-- USL Championship  
-- (Extensible) Canadian Premier League, NCAA / SuperDraft, selected accessible international leagues  
-
-Elite Big-5 regular starters are **out of scope** for the MVP unless availability filters are explicitly enabled later.
-
-## MVP tactical roles (5)
-
-Designed so additional roles can be added via `config/role_weights.yml` without rewriting the ranking engine:
-
-1. Pressing striker  
-2. Transition winger  
-3. Ball-winning midfielder  
-4. Progressive center back  
-5. Overlapping fullback  
-
-## Architecture
+## Core formulas
 
 ```
-One universal player database
-+ one ranking framework
-+ configurable MLS club recruitment profiles
-+ seasonal positional needs
-= club-specific shortlists from the same player pool
+Sporting Impact         = position percentile of reliability-adjusted blended total G+/96
+Compensation Percentile = position percentile of 2026 guaranteed compensation
+Value Surplus           = Sporting Impact − Compensation Percentile
+Undervaluation Score    = position percentile of Value Surplus among eligible players
 ```
 
-Club profiles are labeled **public-data-based estimated club profiles**. Users can override weights in the Shiny app.
+Goals Added components (shooting, passing, receiving, dribbling, interrupting, fouling) explain profiles — they are **not** re-weighted into the primary Sporting Impact score. All visible Goals Added rates use **per 96 minutes**.
 
-## Repository layout
+## Official eligibility
 
-See the tree under `mls-recruitment-intelligence/`. Pipeline stages live in `scripts/01_…` through `07_…`.
+- Current MLS player with a valid position group
+- Known 2026 guaranteed compensation
+- Sporting Impact available
+- ≥ 450 minutes in 2026
+
+Goalkeepers are excluded until comparable public metrics support a separate model.
+
+Players evaluated and official eligible counts are generated dynamically from production score files (see About page, banner, Excel Executive Summary, and `data/processed/value_index_summary.json`).
+
+## Value labels
+
+No player with Value Surplus ≤ 0 can be labeled Undervalued, Strong Value, or Elite Value.
+
+| Label | Requirements |
+|-------|----------------|
+| Elite Value | Surplus ≥ 25, Undervaluation Score ≥ 90, Sporting Impact ≥ 70, Medium/High confidence |
+| Strong Value | Surplus ≥ 15, Undervaluation Score ≥ 75, Sporting Impact ≥ 60, Medium/High confidence |
+| Undervalued | Surplus ≥ 5, Undervaluation Score ≥ 60, Sporting Impact ≥ 55 |
+| Fair Value | Surplus in (−15, 5), or fails an impact/confidence floor for a higher label |
+| Below Expected Value by Current Model | Surplus ≤ −15 |
+
+## Ranking columns
+
+- **Display Rank** — sequential across all official eligible players (combined table)
+- **Position Rank** — rank within position group (Position Rankings and combined table)
+
+## Application pages
+
+1. About & Methodology  
+2. MLS Value Rankings  
+3. Position Rankings  
+4. Team Value  
+5. Player Profile  
+6. Compare Players  
 
 ## Quick start
 
-### Prerequisites
-
-- R ≥ 4.3  
-- Quarto or pandoc (for HTML reports)  
-- Optional: PostgreSQL (SQLite used for local MVP)
-
-### One-command pipeline (recommended)
-
 ```bash
-cd mls-recruitment-intelligence
+cd mls-recruitment-intelligence   # repository folder
 Rscript scripts/install_dependencies.R
-Rscript scripts/run_pipeline.R
+Rscript scripts/run_pipeline.R --skip-collect --skip-reports   # score from existing interim data
+# or full refresh:
+# Rscript scripts/run_pipeline.R --force-refresh
+
 Rscript -e "shiny::runApp('app', port = 7788)"
 ```
 
-Live ASA mode (requires `itscalledsoccer`):
+One-command style workflow:
 
 ```bash
-Rscript -e "install.packages('itscalledsoccer')"
-Rscript scripts/run_pipeline.R --live
+Rscript scripts/run_pipeline.R --skip-collect
+Rscript -e "shiny::runApp('app', host='0.0.0.0', port=7788)"
 ```
 
-### Manual step-by-step
+## Pipeline steps
 
-```bash
-Rscript scripts/00_generate_demo_data.R
-Rscript scripts/01_collect_data.R
-Rscript scripts/02_clean_data.R
-Rscript scripts/03_load_database.R
-Rscript scripts/04_build_features.R
-Rscript scripts/05_train_models.R
-Rscript scripts/06_generate_rankings.R
-Rscript scripts/07_generate_reports.R
-```
+1. Restore dependencies  
+2. Collect ASA / MLSPA (MLS-only)  
+3. Clean + load SQLite  
+4. Build Value Index scores  
+5. Run tests + validation  
+6. Export Excel  
+7. Launch Shiny  
 
-Set `project.mode: live` in `config/config.yml` to pull from the American Soccer Analysis API via `itscalledsoccer` (respect rate limits; results are cached under `data/raw/`).
+## Data cutoffs
 
-## Case studies
+Displayed in-app from `data/processed/data_provenance.json` (performance through date and MLSPA compensation as-of date).
 
-Narratives in `reports/case_studies/`:
+## Validation
 
-1. High-pressing transition club (e.g. Red Bulls–like profile)  
-2. Possession-oriented club  
-3. Budget-conscious MLS club  
+See `docs/validation.md` and `reports/_output/model_validation.html`.  
+Primary claim remains descriptive: players whose public on-ball impact exceeds compensation standing. Year-to-year stability is reported; breakout prediction is not claimed.
 
-## Daily refresh (deployed live season)
+## Documentation
 
-The product does **not** stream match-by-match. For a deploy where users see a **new data cutoff the next day**:
+- `docs/methodology.md`
+- `docs/model_card.md`
+- `docs/data_sources.md`
+- `docs/limitations.md`
+- `docs/deployment.md`
+- `FINAL_RELEASE_CHECKLIST.md`
+- `PIVOT_PLAN.md`
 
-1. **Schedule a nightly pipeline** (force re-fetch ASA/MLSPA, rebuild scores):
-
-```bash
-# cron example — 06:15 local time
-15 6 * * * cd /path/to/mls-recruitment-intelligence && Rscript scripts/refresh_daily.R >> logs/refresh.log 2>&1
-```
-
-Or manually:
-
-```bash
-Rscript scripts/run_pipeline.R --force-refresh --skip-reports
-```
-
-2. **Keep Shiny running** — the app polls processed files (default every 60s) and **hot-reloads** when the cutoff/files change. No restart required after a successful refresh.
-
-Config knobs in `config/config.yml`:
-
-- `acquisition.asa.cache_hours` — stale cache threshold (default 12h)  
-- `deployment.auto_reload` / `deployment.refresh_check_seconds` — in-app hot-reload  
-
-ASA rate limits still apply; schedule once per day (or a few times), not continuously.
-
-## Status
-
-**Live ASA mode** is the default product path (`itscalledsoccer` → clean mapper → scoring). Cached live pulls land under `data/raw/cache/`. Use `--demo` only for offline synthetic demos.
-
-
-Primary MVP source: **American Soccer Analysis** public API (`itscalledsoccer` R client) for MLS, MLS NEXT Pro, and USL Championship — including xG, xPass, Goals Added (g+), and MLS salaries.
-
-See `docs/data_sources.md` for the full assessment (licensing, identifiers, reliability, scraping alternatives).
-
-## Important limitations
-
-- League translation factors for MVP are **transparent tier-based priors**, not high-confidence causal estimates.  
-- Transfer values and contract status are often incomplete; feasibility uses **tiers**, not exact fees.  
-- Club profiles are **estimates from public information**, not internal sporting plans.  
-- Rankings are decision-support tools, not signing recommendations.
-
-Full caveats: `docs/limitations.md`.
-
-## License
-
-MIT — see `LICENSE`. Attribute upstream data providers as documented in `docs/data_sources.md`.
+Recruitment-engine code is preserved under `archive/recruitment_engine/` and branch `archive/recruitment-engine-backup`.

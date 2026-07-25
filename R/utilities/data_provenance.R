@@ -125,27 +125,29 @@ make_demo_provenance <- function(cfg) {
   )
 }
 
-source_cutoff_labels <- function(provenance) {
+source_cutoff_labels <- function(provenance, cfg = NULL) {
   if (isTRUE(provenance$is_synthetic)) {
     return(c("SYNTHETIC DEMO DATA — source cutoffs not applicable"))
   }
+  cadence <- cfg$deployment$refresh_cadence_label %||% "every day"
   c(
-    paste0("Performance data through: ",
-           provenance$performance_through %||% provenance$data_cutoff_local %||% "unknown"),
-    paste0("MLSPA compensation as of: ",
-           provenance$mlspa_compensation_as_of %||% provenance$salary_as_of %||% "unknown"),
-    paste0("Official roster profile as of: ",
-           provenance$official_roster_profile_as_of %||% "not ingested — salary/minutes backbone only"),
-    paste0("Transactions incorporated through: ",
-           provenance$transactions_through %||% "not systematically ingested")
+    paste0(
+      "Performance data through: ",
+      provenance$performance_through %||% provenance$data_cutoff_local %||% "unknown",
+      " (updates ", cadence, ")"
+    ),
+    paste0(
+      "MLSPA compensation as of: ",
+      provenance$mlspa_compensation_as_of %||% provenance$salary_as_of %||% "unknown"
+    )
   )
 }
 
-cutoff_label <- function(provenance) {
+cutoff_label <- function(provenance, cfg = NULL) {
   if (isTRUE(provenance$is_synthetic)) {
     return("SYNTHETIC DEMO DATA — no live cutoff")
   }
-  bits <- source_cutoff_labels(provenance)
+  bits <- source_cutoff_labels(provenance, cfg = cfg)
   paste(bits, collapse = " · ")
 }
 
@@ -153,7 +155,7 @@ evaluation_period_label <- function(period, cfg = NULL) {
   labels <- cfg$labels %||% list(
     ytd_2026 = "2026 YTD (season-to-date — not full-season)",
     full_2025 = "2025 full season (completed)",
-    blended = "Blended recent performance (2026 YTD + 2025 prior)"
+    blended = "2025+2026 season to date"
   )
   labels[[period]] %||% period
 }
