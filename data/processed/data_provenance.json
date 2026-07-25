@@ -1,0 +1,20 @@
+{
+  "is_synthetic": false,
+  "product_season": 2026,
+  "evaluation_period_default": "blended",
+  "data_cutoff_utc": "2026-07-25 22:12:44 UTC",
+  "data_cutoff_local": "2026-07-25 22:12:44 UTC",
+  "performance_through": "2026-07-25",
+  "mlspa_compensation_as_of": "2026-04-16",
+  "official_roster_profile_as_of": "not ingested — salary/minutes backbone only",
+  "transactions_through": "not systematically ingested",
+  "seasons_present": [2024, 2025, 2026],
+  "leagues_present": "mls",
+  "n_players": 1156,
+  "salary_season": 2026,
+  "sources": [
+    "American Soccer Analysis API (itscalledsoccer)",
+    "MLS player salaries via ASA / MLSPA public salary guide"
+  ],
+  "notes": "2026 metrics are season-to-date only and must not be labeled as full-season. 2025 is the completed-season baseline prior. 2024 is used only for longer-term development trends. League-tier factors are assumed league-strength adjustments until estimated from movers. Contribution index is unvalidated — not a precise projection."
+}
