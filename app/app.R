@@ -736,17 +736,70 @@ server <- function(input, output, session) {
     players_raw() |> dplyr::filter(display_name == input$player) |> dplyr::slice(1)
   })
 
+  # Rank within position group among peers with a finite value (1 = highest).
+  # Official eligible pool when available; otherwise all positional peers.
+  fmt_pos_rank <- function(player_row, col, peers_df, higher_is_better = TRUE) {
+    x <- player_row[[col]][[1]]
+    if (!is.finite(x)) return("—")
+    pg <- player_row$position_group[[1]]
+    pool <- peers_df |>
+      dplyr::filter(
+        .data$position_group == pg,
+        is.finite(.data[[col]])
+      )
+    if (isTRUE(any(peers_df$official_eligible %in% TRUE)) &&
+        col %in% c(
+          "sporting_impact", "compensation_percentile", "value_surplus",
+          "undervaluation_score", "compensation"
+        )) {
+      elig_pool <- pool |> dplyr::filter(official_eligible %in% TRUE)
+      if (nrow(elig_pool)) pool <- elig_pool
+    }
+    if (!nrow(pool)) return("—")
+    vals <- pool[[col]]
+    ranks <- if (isTRUE(higher_is_better)) {
+      rank(-vals, ties.method = "min")
+    } else {
+      rank(vals, ties.method = "min")
+    }
+    hit <- which(pool$asa_player_id == player_row$asa_player_id[[1]])
+    if (!length(hit)) {
+      # fallback match by display name if id missing
+      hit <- which(pool$display_name == player_row$display_name[[1]])
+    }
+    if (!length(hit)) return("—")
+    sprintf("%s of %s in position", format(ranks[[hit[[1]]]], big.mark = ","), format(nrow(pool), big.mark = ","))
+  }
+
   output$player_header <- renderUI({
     p <- selected_player()
+    peers <- players_raw()
+    conf <- dplyr::coalesce(p$model_confidence, 100 - p$model_uncertainty)
+    # temporary column for ranking model confidence consistently
+    peers$model_confidence_rankval <- dplyr::coalesce(peers$model_confidence, 100 - peers$model_uncertainty)
+    p$model_confidence_rankval <- conf
+
     tagList(
       h3(p$display_name),
       p(sprintf("%s · %s · Age %.1f · %s 2026 minutes", p$club, p$position_label, round(p$age, 1), round(p$minutes_2026))),
       tags$span(class = "value-chip", p$value_label),
       tags$ul(
-        tags$li(HTML(paste0("<strong>Sporting Impact:</strong> ", fmt_num(p$sporting_impact)))),
-        tags$li(HTML(paste0("<strong>Compensation Percentile:</strong> ", fmt_num(p$compensation_percentile)))),
-        tags$li(HTML(paste0("<strong>Value Surplus:</strong> ", fmt_num(p$value_surplus)))),
-        tags$li(HTML(paste0("<strong>Undervaluation Score:</strong> ", fmt_num(p$undervaluation_score)))),
+        tags$li(HTML(paste0(
+          "<strong>Sporting Impact:</strong> ", fmt_num(p$sporting_impact),
+          " <span class=\"help-text\">(", fmt_pos_rank(p, "sporting_impact", peers), ")</span>"
+        ))),
+        tags$li(HTML(paste0(
+          "<strong>Compensation Percentile:</strong> ", fmt_num(p$compensation_percentile),
+          " <span class=\"help-text\">(", fmt_pos_rank(p, "compensation_percentile", peers), ")</span>"
+        ))),
+        tags$li(HTML(paste0(
+          "<strong>Value Surplus:</strong> ", fmt_num(p$value_surplus),
+          " <span class=\"help-text\">(", fmt_pos_rank(p, "value_surplus", peers), ")</span>"
+        ))),
+        tags$li(HTML(paste0(
+          "<strong>Undervaluation Score:</strong> ", fmt_num(p$undervaluation_score),
+          " <span class=\"help-text\">(", fmt_pos_rank(p, "undervaluation_score", peers), ")</span>"
+        ))),
         tags$li(HTML(paste0(
           "<strong>Display Rank / Position Rank:</strong> ",
           ifelse(is.finite(p$display_rank), p$display_rank, "—"),
@@ -756,10 +809,13 @@ server <- function(input, output, session) {
         ))),
         tags$li(HTML(paste0("<strong>Data Confidence:</strong> ", p$data_confidence))),
         tags$li(HTML(paste0(
-          "<strong>Model Confidence:</strong> ",
-          fmt_num(dplyr::coalesce(p$model_confidence, 100 - p$model_uncertainty))
+          "<strong>Model Confidence:</strong> ", fmt_num(conf),
+          " <span class=\"help-text\">(", fmt_pos_rank(p, "model_confidence_rankval", peers), ")</span>"
         ))),
-        tags$li(HTML(paste0("<strong>Guaranteed compensation:</strong> ", fmt_money(p$compensation))))
+        tags$li(HTML(paste0(
+          "<strong>Guaranteed compensation:</strong> ", fmt_money(p$compensation),
+          " <span class=\"help-text\">(", fmt_pos_rank(p, "compensation", peers), ")</span>"
+        )))
       )
     )
   })
