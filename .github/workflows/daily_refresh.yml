@@ -30,7 +30,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/processed data/interim data/raw/cache database/mls_value_index.sqlite exports || true
+          # data/* and exports/* are gitignored locally; force-add so Actions can persist refreshes
+          git add -f data/processed data/interim exports 2>/dev/null || true
+          git add -f database/mls_value_index.sqlite 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "No data changes to commit"
           else
