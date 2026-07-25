@@ -36,6 +36,15 @@ jobs:
       - uses: actions/checkout@v4
         if: steps.season.outputs.active == 'true'
 
+      - name: Install system libraries
+        if: steps.season.outputs.active == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libcurl4-openssl-dev libssl-dev libxml2-dev libuv1-dev \
+            libfontconfig1-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev \
+            libpng-dev libtiff5-dev libjpeg-dev
+
       - uses: r-lib/actions/setup-r@v2
         if: steps.season.outputs.active == 'true'
         with:
@@ -45,7 +54,7 @@ jobs:
         if: steps.season.outputs.active == 'true'
         run: |
           Rscript scripts/install_dependencies.R
-          Rscript -e 'pkgs <- c("scales","plotly","rsconnect","httpuv","htmltools","htmlwidgets","later","promises","Rcpp"); need <- setdiff(pkgs, rownames(installed.packages())); if (length(need)) install.packages(need, repos="https://cloud.r-project.org")'
+          Rscript -e 'pkgs <- c("scales","plotly","rsconnect","httpuv","htmltools","htmlwidgets","later","promises"); need <- setdiff(pkgs, rownames(installed.packages())); if (length(need)) install.packages(need); stopifnot(requireNamespace("itscalledsoccer", quietly=TRUE)); message("itscalledsoccer OK")'
 
       - name: Refresh ASA/MLSPA and rebuild scores
         if: steps.season.outputs.active == 'true'
