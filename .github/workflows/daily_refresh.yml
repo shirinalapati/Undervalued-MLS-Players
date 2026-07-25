@@ -1,32 +1,58 @@
 name: Daily MLS Value Index refresh
 
-on:
+# Quoted "on" avoids YAML 1.1 treating `on` as boolean true (breaks some parsers).
+"on":
   schedule:
-    # 13:15 UTC ≈ 06:15 America/Los_Angeles (standard time)
+    # 13:15 UTC ≈ 06:15 America/Los_Angeles
     - cron: "15 13 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-value-index-refresh
+  cancel-in-progress: false
+
 jobs:
   refresh:
+    name: Refresh ASA data and redeploy
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 90
     steps:
+      - name: Check MLS season window
+        id: season
+        run: |
+          TODAY=$(date -u +%F)
+          END=2026-12-20
+          echo "today=$TODAY"
+          if [[ "$TODAY" > "$END" ]]; then
+            echo "Past MLS 2026 season window ($END). Skipping."
+            echo "active=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "active=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.season.outputs.active == 'true'
 
       - uses: r-lib/actions/setup-r@v2
+        if: steps.season.outputs.active == 'true'
         with:
           use-public-rspm: true
 
       - name: Install R packages
+        if: steps.season.outputs.active == 'true'
         run: |
-          Rscript -e 'install.packages(c("yaml","jsonlite","dplyr","tidyr","readr","tibble","purrr","DBI","RSQLite","openxlsx","here"), repos="https://cloud.r-project.org")'
-          Rscript -e 'if (!requireNamespace("itscalledsoccer", quietly=TRUE)) install.packages("itscalledsoccer", repos="https://cloud.r-project.org")'
+          Rscript scripts/install_dependencies.R
+          Rscript -e 'pkgs <- c("scales","plotly","rsconnect","httpuv","htmltools","htmlwidgets","later","promises","Rcpp"); need <- setdiff(pkgs, rownames(installed.packages())); if (length(need)) install.packages(need, repos="https://cloud.r-project.org")'
 
       - name: Refresh ASA/MLSPA and rebuild scores
+        if: steps.season.outputs.active == 'true'
         run: Rscript scripts/refresh_daily.R
 
       - name: Commit updated processed data
+        if: steps.season.outputs.active == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -40,24 +66,15 @@ jobs:
             git push
           fi
 
-      - name: Deploy to shinyapps.io (optional)
-        if: ${{ secrets.SHINYAPPS_TOKEN != '' && secrets.SHINYAPPS_SECRET != '' }}
+      - name: Deploy to shinyapps.io
+        if: steps.season.outputs.active == 'true'
         env:
           SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
           SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
           SHINYAPPS_ACCOUNT: ${{ secrets.SHINYAPPS_ACCOUNT }}
         run: |
-          Rscript -e 'install.packages("rsconnect", repos="https://cloud.r-project.org")'
-          Rscript -e '
-            rsconnect::setAccountInfo(
-              name = Sys.getenv("SHINYAPPS_ACCOUNT"),
-              token = Sys.getenv("SHINYAPPS_TOKEN"),
-              secret = Sys.getenv("SHINYAPPS_SECRET")
-            )
-            rsconnect::deployApp(
-              appDir = ".",
-              appName = "mls-value-index",
-              launch.browser = FALSE,
-              forceUpdate = TRUE
-            )
-          '
+          if [ -z "$SHINYAPPS_TOKEN" ] || [ -z "$SHINYAPPS_SECRET" ] || [ -z "$SHINYAPPS_ACCOUNT" ]; then
+            echo "Skipping deploy: set repository secrets SHINYAPPS_ACCOUNT, SHINYAPPS_TOKEN, SHINYAPPS_SECRET"
+            exit 0
+          fi
+          Rscript scripts/deploy_shinyapps.R
