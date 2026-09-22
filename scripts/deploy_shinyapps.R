@@ -46,36 +46,73 @@ if (length(missing)) {
   )
 }
 
-# Default listDeploymentFiles() skips .gitignore paths (including data/processed).
-base_files <- rsconnect::listDeploymentFiles(PROJECT_ROOT)
+# Only ship what the live Shiny app sources. listDeploymentFiles() previously
+# packed the whole repo (.github, tests, notebooks, pipeline scripts, reports),
+# which caused shinyapps.io "Timeout during request" on the daily refresh.
 rel_extra <- function(paths) {
   paths <- paths[file.exists(paths)]
   if (!length(paths)) return(character())
-  # paths relative to PROJECT_ROOT
   sub(paste0("^", gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", PROJECT_ROOT), "/?"), "", paths)
 }
 
-extra <- c(
-  rel_extra(list.files(file.path(PROJECT_ROOT, "data", "processed"), full.names = TRUE, recursive = TRUE)),
-  rel_extra(list.files(file.path(PROJECT_ROOT, "data", "external", "demo"), full.names = TRUE, recursive = TRUE))
-)
+collect_files <- function(rel_paths) {
+  out <- character()
+  for (p in rel_paths) {
+    full <- file.path(PROJECT_ROOT, p)
+    if (dir.exists(full)) {
+      files <- list.files(full, full.names = TRUE, recursive = TRUE)
+      files <- files[!dir.exists(files)]
+      out <- c(out, rel_extra(files))
+    } else if (file.exists(full)) {
+      out <- c(out, p)
+    }
+  }
+  unique(out)
+}
 
-# Keep the bundle lean; skip archive, validation HTML, and invalid renv.lock stub
-skip_re <- "^(archive/|reports/_output/|renv\\.lock$|renv/)"
-app_files <- unique(c(base_files, extra))
-app_files <- app_files[!grepl(skip_re, app_files)]
-# Prefer root app.R as the shiny entrypoint
-app_files <- unique(c("app.R", app_files))
+app_files <- collect_files(c(
+  "app.R",
+  "app",
+  "config",
+  "R/utilities/load_project.R",
+  "R/utilities/data_provenance.R",
+  "R/models/value_index.R",
+  "R/ui",
+  "R/exports",
+  "data/processed"
+))
+app_files <- app_files[!grepl("(^|/)(README\\.md|\\.gitkeep)$", app_files)]
+if (!length(app_files)) stop("Deploy bundle is empty.")
 
 message("Deploying mls-value-index from ", PROJECT_ROOT)
 message("Bundle file count: ", length(app_files))
-rsconnect::deployApp(
-  appDir = PROJECT_ROOT,
-  appName = "mls-value-index",
-  appFiles = app_files,
-  appPrimaryDoc = "app.R",
-  launch.browser = FALSE,
-  forceUpdate = TRUE
-)
+options(rsconnect.timeout = 3600)
+options(rsconnect.http.timeout = 600)
+
+deploy_once <- function() {
+  rsconnect::deployApp(
+    appDir = PROJECT_ROOT,
+    appName = "mls-value-index",
+    appFiles = app_files,
+    appPrimaryDoc = "app.R",
+    launch.browser = FALSE,
+    forceUpdate = TRUE,
+    lint = FALSE
+  )
+}
+
+ok <- FALSE
+for (attempt in 1:3) {
+  ok <- tryCatch({
+    deploy_once()
+    TRUE
+  }, error = function(e) {
+    message("Deploy attempt ", attempt, " failed: ", conditionMessage(e))
+    if (attempt < 3) Sys.sleep(20 * attempt)
+    FALSE
+  })
+  if (isTRUE(ok)) break
+}
+if (!isTRUE(ok)) stop("shinyapps.io deploy failed after 3 attempts.")
 message("Deploy complete.")
 message("URL: https://undervalued-mls.shinyapps.io/mls-value-index/")
