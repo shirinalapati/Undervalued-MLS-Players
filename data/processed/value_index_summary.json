@@ -1,19 +1,19 @@
 {
   "model_version": "1.1.0",
   "evaluation_period": "blended",
-  "n_players": 1042,
+  "n_players": 1043,
   "n_official_eligible": 527,
-  "n_missing_compensation": 124,
+  "n_missing_compensation": 125,
   "leagues": "mls",
   "position_groups": {
     "CB": 202,
-    "CM": 233,
-    "FB": 203,
-    "FW": 156,
-    "W": 248
+    "CM": 235,
+    "FB": 202,
+    "FW": 157,
+    "W": 247
   },
   "clubs": 30,
   "research_question": "Which current MLS players provide the most compensation-efficient position-adjusted on-ball impact?",
-  "data_cutoff": "Performance data through: 2026-10-01 (updates every day) · MLSPA compensation as of: 2026-04-16",
-  "generated_at": "2026-10-01 18:56:44 UTC"
+  "data_cutoff": "Performance data through: 2026-10-02 (updates every day) · MLSPA compensation as of: 2026-04-16",
+  "generated_at": "2026-10-02 18:27:42 UTC"
 }
