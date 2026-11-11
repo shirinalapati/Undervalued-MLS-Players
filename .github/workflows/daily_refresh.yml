@@ -33,7 +33,7 @@ jobs:
             echo "active=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         if: steps.season.outputs.active == 'true'
 
       - name: Install system libraries
@@ -48,6 +48,11 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         if: steps.season.outputs.active == 'true'
         with:
+          # Pin R: shinyapps.io lags new R releases. With "release", a fresh R
+          # (4.6.2) was rejected for ~a week ("Unsupported R version ... jammy"),
+          # failing every deploy Oct 29 – Nov 5 2026. Bump only after shinyapps
+          # supports the newer version.
+          r-version: "4.6.2"
           use-public-rspm: true
 
       - name: Install R packages
